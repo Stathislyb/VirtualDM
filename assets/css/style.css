@@ -1,6 +1,9 @@
 .container{width:85%;}
 .pointer{cursor:pointer;}
 .no-padding{padding:0;}
+.text-light-gray {color: #c3c3c3!important;}
+.nounderline{text-decoration: none !important;}
+
 .rank-links button{max-width:200px;}
 .title-label{font-size: 1.75rem;font-weight: 600;}
 .event_card{background-color: #ffdb8c;font-size: 1.2em;margin-top: 10px;}

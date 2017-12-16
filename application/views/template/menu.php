@@ -10,5 +10,8 @@
 		<a class="nav-link" href="<?php base_url(); ?>">Home<span class="sr-only">(current)</span></a>
 	  </li>
 	</ul>
+	<span class="nav-item float-right pt-2">
+		<a href="https://github.com/Stathislyb/VirtualDM" class="text-light-gray nounderline" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> View on GitHub</a>
+	  </span>
   </div>
 </nav>

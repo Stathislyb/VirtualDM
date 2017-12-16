@@ -19,7 +19,7 @@
 		</div>
 		<?php echo $content; ?>
     </div>
-	
+
 	    <!-- load footer JS files -->
 	<?php echo $html_footer; ?>
 	<script>

@@ -26,6 +26,7 @@ class Template{
 		$this->addJS( base_url('assets/vue/vue.js') );
 		
         $this->addCSS( base_url('assets/bootstrap/css/bootstrap.min.css') );
+		$this->addCSS( base_url('assets/font-awesome/css/font-awesome.min.css') );
 		$this->addCSS( base_url('assets/css/style.css') );
     }
 
