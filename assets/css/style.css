@@ -1,0 +1,8 @@
+.container{width:85%;}
+.pointer{cursor:pointer;}
+.no-padding{padding:0;}
+.rank-links button{max-width:200px;}
+.title-label{font-size: 1.75rem;font-weight: 600;}
+.event_card{background-color: #ffdb8c;font-size: 1.2em;margin-top: 10px;}
+.event_card .card-header{background-color: #f3d89e;}
+.event_description{font-style: italic;color: #423737;font-size:85%;}
