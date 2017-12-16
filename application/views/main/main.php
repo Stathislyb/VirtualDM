@@ -8,7 +8,7 @@ var html = `
 					v-for="i in 9" 
 					v-on:click="setChaos(i)" 
 					class="btn btn-outline-warning pointer mr-2" 
-					v-bind:class="{ active: isChaosSelect(i) }" >
+					v-bind:class="{ active: isChaosSelect(i), text-underline: (i==5) }" >
 					{{ i }}
 				</button>
 			</div>
@@ -22,6 +22,15 @@ var html = `
 					class="col btn btn-outline-primary pointer mr-2 mb-1" 
 					v-bind:class="{ active: rank.selected }" >
 					{{ rank.title }}
+				</button>
+			</div>
+		</div> 
+		<div class="col-md-12">
+			<div class="col-md-3 no-padding">
+				<button type="button" 
+					v-on:click="generateEvent()" 
+					class="col btn btn-outline-success pointer mt-3"  >
+					Generate Random Event
 				</button>
 			</div>
 		</div> 
@@ -88,7 +97,7 @@ Vue.component('vdm-component', {
 			var action_dice = this.RollDice(1,this.actions.length);
 			var object_dice = this.RollDice(1,this.subjects.length);
 			this.event.description = this.subjects[object_dice]+" "+this.actions[action_dice];
-			console.log(this.event);
+			this.event.show = true;
 		},
 		RollDice: function(min,max){
 			return Math.floor(Math.random()*(max-min+1)+min);
@@ -119,7 +128,6 @@ Vue.component('vdm-component', {
 			//make_event = true;
 			if( make_event ){
 				this.generateEvent();
-				this.event.show = true;
 			}else{
 				this.event.show = false;
 			}
@@ -127,7 +135,16 @@ Vue.component('vdm-component', {
 	},
 	computed: {
 		threshold: function(){
-			return this.selected_value + (this.chaos_factor-5)*2;
+			var value = this.selected_value + (this.chaos_factor-5)*5;
+			
+			if(value < 0){
+				value = 0;
+			}
+			if(value>100){
+				value = 100;
+			}
+			
+			return value;
 		},
 		result_msg: function(){
 			var message = '';
