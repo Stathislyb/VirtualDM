@@ -34,6 +34,13 @@ class Main extends CI_Controller {
 				'meaning' => 'Xxvcxv Dgfgfg',
 				'description' => 'Asdasd asdasd',
 			),
+			'scenes' => 2,
+			'list'=>array(
+				'label' => 'test',
+				'label' => 'test',
+				'label' => 'test',
+				'label' => 'test',
+			),
 		);
 		
 		$data['app_data'] = json_encode ( $app_data );

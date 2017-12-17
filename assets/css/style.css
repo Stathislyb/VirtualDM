@@ -3,10 +3,15 @@
 .no-padding{padding:0;}
 .text-light-gray {color: #c3c3c3!important;}
 .nounderline{text-decoration: none !important;}
-.text-underline{text-decoration: underline;}
+.underline{text-decoration: underline !important;}
 
 .rank-links button{max-width:200px;}
 .title-label{font-size: 1.75rem;font-weight: 600;}
 .event_card{background-color: #ffdb8c;font-size: 1.2em;margin-top: 10px;}
 .event_card .card-header{background-color: #f3d89e;}
 .event_description{font-style: italic;color: #423737;font-size:85%;}
+
+.ivu-tabs.ivu-tabs-card{border: 1px solid #dedede;border-top: none;}
+.hide-tabs-border-left{border-left: 1px solid #ffffff; width: 1px; margin-bottom: -32px; z-index: 999; height: 32px; position: relative;}
+.hide-tabs-border-right{border-right: 1px solid #ffffff; width: 1px; margin-bottom: -32px; z-index: 999; height: 32px; position: relative;float:right;}
+.ivu-tabs .ivu-tabs-tabpane{padding:20px}

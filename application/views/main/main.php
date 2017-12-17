@@ -2,13 +2,21 @@
 var html = `
 	<div class="row mt-5">
 		<div class="col-md-12">
+			<div class="hide-tabs-border-left"></div>
+			<div class="hide-tabs-border-right"></div>
+			<Tabs type="card" closable @on-tab-remove="removeScene">
+				<TabPane v-for="scene in scenes" :key="scene" :label="'Scene' + scene">Scene {{ scene }} content</TabPane>
+				<Button type="ghost" @click="addScene" size="small" slot="extra">Add Scene</Button>
+			</Tabs>
+		</div>			
+		<div class="col-md-12 mt-4">
 			<label class="title-label">Chaos:</label>
 			<div class="chaos-select" >
 				<button type="button"
 					v-for="i in 9" 
 					v-on:click="setChaos(i)" 
 					class="btn btn-outline-warning pointer mr-2" 
-					v-bind:class="{ active: isChaosSelect(i), text-underline: (i==5) }" >
+					v-bind:class="{ active: isChaosSelect(i), underline: (i==5) }" >
 					{{ i }}
 				</button>
 			</div>
@@ -29,7 +37,7 @@ var html = `
 			<div class="col-md-3 no-padding">
 				<button type="button" 
 					v-on:click="generateEvent()" 
-					class="col btn btn-outline-success pointer mt-3"  >
+					class="col btn btn-outline-danger pointer mt-3"  >
 					Generate Random Event
 				</button>
 			</div>
@@ -85,7 +93,7 @@ Vue.component('vdm-component', {
 			var focus_dice = this.RollDice(1,100);
 			var focus_title = '';
 			this.focus.forEach(function(focus_element) {
-				if( focus_title=='' && focus_dice < focus_element.threshold){
+				if( focus_title=='' && focus_dice <= focus_element.threshold){
 					focus_title = focus_element.title;
 				}
 			});
@@ -108,6 +116,12 @@ Vue.component('vdm-component', {
 				active = true;
 			}
 			return active;
+		},
+		removeScene (name) {
+			this['scene ' + name] = false;
+		},
+		addScene () {
+			this.scenes ++;
 		},
 	},
 	watch:{
