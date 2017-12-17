@@ -386,7 +386,7 @@ class Main_model extends CI_Model {
 		return $result;
 	}
 	
-	public function get_sceen_states(){
+	public function get_scene_states(){
 		$result = array(
 			"altered",
 			"interrupted",
@@ -397,6 +397,23 @@ class Main_model extends CI_Model {
 			"altered",
 			"interrupted",
 			"altered"
+		);
+
+		return $result;
+	}
+	
+	public function get_sceens(){
+		$result = array(
+			array(
+				'id' => 1,
+				'title' => 'scene 1',
+				'description' => 'description 1',
+			),
+			array(
+				'id' => 2,
+				'title' => 'scene 2',
+				'description' => 'description 2',
+			),
 		);
 
 		return $result;

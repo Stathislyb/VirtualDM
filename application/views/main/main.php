@@ -1,73 +1,113 @@
 <script>
 var html = `
 	<div class="row mt-5">
-		<div class="col-md-12">
+		<div class="col-md-12 mb-4">
 			<div class="hide-tabs-border-left"></div>
 			<div class="hide-tabs-border-right"></div>
 			<Tabs type="card" closable @on-tab-remove="removeScene">
-				<TabPane v-for="scene in scenes" :key="scene" :label="'Scene' + scene">Scene {{ scene }} content</TabPane>
+				<TabPane v-for="scene in scenes" :key="scene.id" :label="scene.title">{{ scene.description }}</TabPane>
 				<Button type="ghost" @click="addScene" size="small" slot="extra">Add Scene</Button>
 			</Tabs>
-		</div>			
-		<div class="col-md-12 mt-4">
-			<label class="title-label">Chaos:</label>
-			<div class="chaos-select" >
-				<button type="button"
-					v-for="i in 9" 
-					v-on:click="setChaos(i)" 
-					class="btn btn-outline-warning pointer mr-2" 
-					v-bind:class="{ active: isChaosSelect(i), underline: (i==5) }" >
-					{{ i }}
-				</button>
-			</div>
-		</div> 
-		<div class="col-md-12">
-			<label class="title-label">Select the Odds:</label>
-			<div class="rank-links">
-				<button type="button" 
-					v-for="rank in ranks" 
-					v-on:click="selectRank(rank)" 
-					class="col btn btn-outline-primary pointer mr-2 mb-1" 
-					v-bind:class="{ active: rank.selected }" >
-					{{ rank.title }}
-				</button>
-			</div>
-		</div> 
-		<div class="col-md-12">
-			<div class="col-md-3 no-padding">
-				<button type="button" 
-					v-on:click="generateEvent()" 
-					class="col btn btn-outline-danger pointer mt-3"  >
-					Generate Random Event
-				</button>
-			</div>
-		</div> 
-		<div class="col-md-12 mt-4">
+		</div>	
+		<div class="col-md-8">
+			<div class="col-md-12">
+				<label class="title-label">Chaos:</label>
+				<div class="chaos-select" >
+					<button type="button"
+						v-for="i in 9" 
+						v-on:click="setChaos(i)" 
+						class="btn btn-outline-warning pointer mr-2" 
+						v-bind:class="{ active: isChaosSelect(i), underline: (i==5) }" >
+						{{ i }}
+					</button>
+				</div>
+			</div> 
+			<div class="col-md-12">
+				<label class="title-label">Select the Odds:</label>
+				<div class="rank-links">
+					<button type="button" 
+						v-for="rank in ranks" 
+						v-on:click="selectRank(rank)" 
+						class="col btn btn-outline-primary pointer mr-2 mb-1" 
+						v-bind:class="{ active: rank.selected }" >
+						{{ rank.title }}
+					</button>
+				</div>
+			</div> 
+			<div class="col-md-12">
+				<div class="col-md-3 no-padding">
+					<button type="button" 
+						v-on:click="generateEvent()" 
+						class="col btn btn-outline-danger pointer mt-3"  >
+						Generate Random Event
+					</button>
+				</div>
+			</div> 
+			<div class="col-md-12 mt-4">
+			
+					<div class="col-md-12 card no-padding" v-if="showresult">
+						<h3 class="card-header">Dice Result</h3>
+						<div class="card-block">
+							<h3 class="card-title">Rolled : 
+								<span data-toggle="tooltip" data-placement="top" title="Lower is better">
+									{{result}} ( {{threshold}}% )
+								</span>
+							</h3>
+							<h3>So, {{result_msg}}</h3>
+						</div>
+					</div>
+					
+					<div class="col-md-12 card no-padding event_card" v-if="event.show">
+						<h3 class="card-header">Random Event</h3>
+						<div class="card-block">
+							<h3 class="card-title">{{event.title}}</h3>
+							<hr/>
+							{{event.meaning}}<br/>
+							<p class="event_description">{{event.description}}</p>
+						</div>
+					</div>
+					
+				</div>
+			</div> 
 		
-				<div class="col-md-12 card no-padding" v-if="showresult">
-					<h3 class="card-header">Dice Result</h3>
-					<div class="card-block">
-						<h3 class="card-title">Rolled : 
-							<span data-toggle="tooltip" data-placement="top" title="Lower is better">
-								{{result}} ( {{threshold}}% )
-							</span>
-						</h3>
-						<h3>So, {{result_msg}}</h3>
-					</div>
+		<div class="col-md-4">
+			<div class="col-md-12 mb-4">
+				<h3>List of Threads / Quests</h3>
+				<button type="button"
+					v-on:click="createThread" 
+					class="list-group-item pointer form-control bg-light-gray" data-toggle="tooltip" data-original-title="Add New Thread or Quest" >
+					<i class="fa fa-plus centered" aria-hidden="true"></i>
+				</button>
+				<div class="list-group list-container slim-scrollbar">
+					<span v-for="(thread, index) in threads_list" :key="thread.id">
+						<button type="button"
+							v-on:click="deleteThread(index)" 
+							class="list-group-item pointer float-right delete-btn">
+							<i class="fa fa-trash-o centered" aria-hidden="true"></i>
+						</button>
+						<a class="list-group-item">{{thread.label}}</a>
+					</span>
 				</div>
-				
-				<div class="col-md-12 card no-padding event_card" v-if="event.show">
-					<h3 class="card-header">Random Event</h3>
-					<div class="card-block">
-						<h3 class="card-title">{{event.title}}</h3>
-						<hr/>
-						{{event.meaning}}<br/>
-						<p class="event_description">{{event.description}}</p>
-					</div>
-				</div>
-				
 			</div>
-		</div> 
+			<div class="col-md-12">
+				<h3>List of Characters</h3>
+				<button type="button"
+					v-on:click="createCharacter" 
+					class="list-group-item pointer form-control bg-light-gray" data-toggle="tooltip" data-original-title="Add New Character" >
+					<i class="fa fa-plus centered" aria-hidden="true"></i>
+				</button>
+				<div class="list-group list-container slim-scrollbar">
+					<span v-for="(character, index) in characters_list" :key="character.id">
+						<button type="button"
+							v-on:click="deleteCharacter(index)" 
+							class="list-group-item pointer float-right delete-btn">
+							<i class="fa fa-trash-o centered" aria-hidden="true"></i>
+						</button>
+						<a class="list-group-item">{{character.label}}</a>
+					</span>
+				</div>
+			</div>
+		</div>
 	</div>
 `;
 </script>
@@ -121,7 +161,36 @@ Vue.component('vdm-component', {
 			this['scene ' + name] = false;
 		},
 		addScene () {
-			this.scenes ++;
+			this.scenes.push({
+				title : 'New scene', 
+				description:'New scene description',
+			});
+		},
+		deleteThread (tread_index){
+			this.threads_list.splice(tread_index, 1);
+		},
+		createThread (){
+			var next_id = 1;
+			if( this.threads_list.length > 0 ){
+				next_id = this.threads_list[this.threads_list.length-1].id+1;
+			}
+			this.threads_list.push({
+				id : next_id, 
+				label:'New Thread',
+			});
+		},
+		deleteCharacter (character_index){
+			this.characters_list.splice(character_index, 1);
+		},
+		createCharacter (){
+			var next_id = 1;
+			if( this.characters_list.length > 0 ){
+				next_id = this.characters_list[this.characters_list.length-1].id+1;
+			}
+			this.characters_list.push({
+				id : next_id, 
+				label:'New Character',
+			});
 		},
 	},
 	watch:{
