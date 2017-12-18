@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 18, 2017 at 06:17 PM
+-- Generation Time: Dec 18, 2017 at 06:51 PM
 -- Server version: 10.1.29-MariaDB
 -- PHP Version: 7.1.12
 
@@ -21,6 +21,105 @@ SET time_zone = "+00:00";
 --
 -- Database: `virtualdm`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `adventures`
+--
+
+CREATE TABLE `adventures` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `status` int(1) NOT NULL DEFAULT '1' COMMENT '0:inactive.1:active',
+  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `characters`
+--
+
+CREATE TABLE `characters` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `character_state` int(1) NOT NULL DEFAULT '1',
+  `status` int(1) NOT NULL DEFAULT '1',
+  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `adventure_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `events`
+--
+
+CREATE TABLE `events` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `status` int(1) NOT NULL DEFAULT '1',
+  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `scene_id` int(11) DEFAULT NULL,
+  `adventure_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `questions`
+--
+
+CREATE TABLE `questions` (
+  `id` int(11) NOT NULL,
+  `question` varchar(510) NOT NULL,
+  `reply` varchar(510) NOT NULL,
+  `status` int(1) NOT NULL DEFAULT '1',
+  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `scene_id` int(11) DEFAULT NULL,
+  `adventure_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `scenes`
+--
+
+CREATE TABLE `scenes` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text CHARACTER SET utf8,
+  `scene_state` int(1) NOT NULL DEFAULT '1',
+  `status` int(1) NOT NULL DEFAULT '1' COMMENT '0:inactive.1:active',
+  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `adventure_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `threads`
+--
+
+CREATE TABLE `threads` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `thread_state` int(1) NOT NULL DEFAULT '1',
+  `status` int(1) NOT NULL DEFAULT '1',
+  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `adventure_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -52,6 +151,42 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `gender`, `phone`, `crea
 --
 
 --
+-- Indexes for table `adventures`
+--
+ALTER TABLE `adventures`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `characters`
+--
+ALTER TABLE `characters`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `events`
+--
+ALTER TABLE `events`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `questions`
+--
+ALTER TABLE `questions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `scenes`
+--
+ALTER TABLE `scenes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `threads`
+--
+ALTER TABLE `threads`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -60,6 +195,42 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `adventures`
+--
+ALTER TABLE `adventures`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `characters`
+--
+ALTER TABLE `characters`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `events`
+--
+ALTER TABLE `events`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `questions`
+--
+ALTER TABLE `questions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `scenes`
+--
+ALTER TABLE `scenes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `threads`
+--
+ALTER TABLE `threads`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
