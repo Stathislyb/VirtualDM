@@ -11,6 +11,27 @@ class Main extends CI_Controller {
 	public function index(){
 		$data = [];
 		
+		// get the scenes' data and prepare to pass them to the component
+		$scenes = $this->Main_model->get_scenes([
+			'adventure_id' => 1,
+		]);
+		$scenes_list = array();
+		if( $scenes != false ){
+			foreach($scenes as $scene){
+				$scenes_list[] = array(
+					'id'	=> $scene->id,
+					'state' => $scene->scene_state,
+					'title' => $scene->name,
+					'description' => $scene->description,
+				);
+			}
+		}
+		$scenes_data = array(
+			'ajax_url' => base_url().'index.php/Main/handle_post',
+			'adventure_id' =>1,
+			'scenes' => $scenes_list,
+		);
+		
 		// get the threads' data and prepare to pass them to the component
 		$threads = $this->Main_model->get_threads([
 			'adventure_id' => 1,
@@ -51,14 +72,13 @@ class Main extends CI_Controller {
 			'characters_list' => $characters_list,
 		);
 		
+		
 		// get the main page's data and prepare to pass them to the component
 		$ranks = $this->Main_model->get_ranks();
 		$focus = $this->Main_model->get_focus();
 		$actions = $this->Main_model->get_actions();
 		$subjects = $this->Main_model->get_subjects();
 		$meaning = $this->Main_model->get_meaning();
-		$scene_states = $this->Main_model->get_scene_states();
-		$scenes = $this->Main_model->get_sceens();
 		$app_data = array(
 			'ajax_url' => base_url().'index.php/Main/handle_post',
 			'adventure_id' =>1,
@@ -67,11 +87,9 @@ class Main extends CI_Controller {
 			'actions' => $actions,
 			'subjects' => $subjects,
 			'meaning' => $meaning,
-			'sceen_states' => $scene_states,
 			'selected_value' => 0,
 			'result' => 0,
 			'chaos_factor' => 5,
-			'scenes' => $scenes,
 			'event' => array(
 				'show' => false,
 				'title' => '',
@@ -80,6 +98,8 @@ class Main extends CI_Controller {
 			)
 		);
 		
+		$data['app_data'] = json_encode ( $scenes_data );
+		$this->template->addView("main", "scenes", $data);
 		$data['app_data'] = json_encode ( $threads_data );
 		$this->template->addView("main", "threads", $data);
 		$data['app_data'] = json_encode ( $characters_data );
@@ -242,6 +262,82 @@ class Main extends CI_Controller {
 		echo json_encode($result);
     }
 	
+	public function create_scene( $data = [] ){
+		$data = $this->security->xss_clean($data);
+		try {
+			$this->db->trans_start();
+			
+			if ( $data['adventure_id'] != 1 ) {
+				throw new Exception('Wrong adventure id.');
+			}
+			if ( empty(trim($data['scene_name'])) ) {
+				throw new Exception('Please fill the scene\'s name.');
+			}
+			
+			$insert_data = array(
+				'adventure_id'=> $data['adventure_id'],
+				'name'=> $data['scene_name'],
+				'description'=> $data['scene_description'],
+			);
+			$insert_id = $this->Main_model->insert_scene($insert_data);
+			
+			$this->db->trans_complete();
+			$message = "The scene was created successfully";
+			$status = 1 ;
+		} catch (Exception $e) {
+			$this->db->trans_rollback();
+			$status = 0 ;
+			$message = $e->getMessage();
+			$insert_id = 0;
+		}
+		
+		$result = array(
+			'status' => $status,
+			'message' => $message,
+			'insert_id'=> $insert_id,
+		);
+		
+		echo json_encode($result);
+    }
+	
+	public function delete_scene( $data = [] ){
+		$data = $this->security->xss_clean($data);
+		try {
+			$this->db->trans_start();
+			
+			if ( !($data['scene_id'] > 0) ) {
+				throw new Exception('Wrong scene id.');
+			}
+			
+			$update_data = array(
+				'scene_id'=> $data['scene_id'],
+				'scene_data' => array(
+					'status' => 0,
+				),
+			);
+			$result = $this->Main_model->update_scene($update_data);
+			
+			if ( $result === false ) {
+				throw new Exception('Update failed.');
+			}
+			
+			$this->db->trans_complete();
+			$message = "The scene was deleted successfully";
+			$status = 1 ;
+		} catch (Exception $e) {
+			$this->db->trans_rollback();
+			$status = 0 ;
+			$message = $e->getMessage();
+		}
+		
+		$result = array(
+			'status' => $status,
+			'message' => $message,
+		);
+		
+		echo json_encode($result);
+    }
+	
 	// handle and root the ajax posts
 	public function handle_post(){
 		$action = $this->input->post('action');
@@ -253,6 +349,10 @@ class Main extends CI_Controller {
 			$this->create_character( $this->input->post('data') );
 		}elseif( $action == 'delete_character' ){
 			$this->delete_character( $this->input->post('data') );
+		}elseif( $action == 'create_scene' ){
+			$this->create_scene( $this->input->post('data') );
+		}elseif( $action == 'delete_scene' ){
+			$this->delete_scene( $this->input->post('data') );
 		}
     }
 }

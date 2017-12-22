@@ -86,28 +86,38 @@ Vue.component('vdm-character-component', {
 			});
 		},
 		deleteCharacter (character_index, character_id){
-			this.$Loading.start();
-			var vdmComponent = this;
-			var formData = {
-						action:"delete_character", 
-						data:{
-							"adventure_id": vdmComponent.adventure_id,
-							"character_id":character_id,
-						},
-					};
-			$.ajax({
-				url : vdmComponent.ajax_url,
-				type: "POST",
-				data : formData,
-				dataType:"json",
-				success: function(data){
-					if(data.status == 1){
-						vdmComponent.characters_list.splice(character_index, 1);
-						vdmComponent.$Loading.finish();
-					}else{
-						vdmComponent.$Loading.error();
-					}
-					vdmComponent.$Message.info(data.message);
+			this.$Modal.confirm({
+				title: 'Delete Thread / Quest',
+				okText: 'Delete',
+                cancelText: 'Cancel',
+				content: '<div class="alert alert-danger">Are you sure you want to delete this character ?</div>',
+				loading: true,
+				onOk: () => {
+					this.$Loading.start();
+					var vdmComponent = this;
+					var formData = {
+								action:"delete_character", 
+								data:{
+									"adventure_id": vdmComponent.adventure_id,
+									"character_id":character_id,
+								},
+							};
+					$.ajax({
+						url : vdmComponent.ajax_url,
+						type: "POST",
+						data : formData,
+						dataType:"json",
+						success: function(data){
+							if(data.status == 1){
+								vdmComponent.characters_list.splice(character_index, 1);
+								vdmComponent.$Loading.finish();
+								vdmComponent.$Modal.remove();
+							}else{
+								vdmComponent.$Loading.error();
+							}
+							vdmComponent.$Message.info(data.message);
+						}
+					});
 				}
 			});
 		},

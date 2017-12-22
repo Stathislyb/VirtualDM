@@ -385,39 +385,6 @@ class Main_model extends CI_Model {
 
 		return $result;
 	}
-	
-	public function get_scene_states(){
-		$result = array(
-			"altered",
-			"interrupted",
-			"altered",
-			"interrupted",
-			"altered",
-			"interrupted",
-			"altered",
-			"interrupted",
-			"altered"
-		);
-
-		return $result;
-	}
-	
-	public function get_sceens(){
-		$result = array(
-			array(
-				'id' => 1,
-				'title' => 'scene 1',
-				'description' => 'description 1',
-			),
-			array(
-				'id' => 2,
-				'title' => 'scene 2',
-				'description' => 'description 2',
-			),
-		);
-
-		return $result;
-	}
    
    public function get_threads($data=[]){
 		$result = false;
@@ -480,6 +447,41 @@ class Main_model extends CI_Model {
 		if( $data['character_id'] > 0 ){
 			$this->db->where('id', $data['character_id']);
 			$this->db->update("characters", $data['character_data']);
+			
+			if($this->db->affected_rows() > 0){
+				$result = true;
+			}
+		}
+		
+		return $result;
+	}
+	
+	public function get_scenes($data=[]){
+		$result = false;
+		if( $data['adventure_id'] > 0 ){
+			$this->db->select('id, name, description, scene_state');
+			$this->db->where('adventure_id', $data['adventure_id']);
+			$this->db->where('status', 1);
+			$query = $this->db->get('scenes');
+			
+			if($query->num_rows() > 0){
+				$result = $query->result();
+			}
+		}
+		
+		return $result;
+	}
+	
+	public function insert_scene($data=[]){
+		$this->db->insert('scenes', $data);
+		return  $this->db->insert_id();
+	}
+   
+	public function update_scene($data=[]){
+		$result = false;
+		if( $data['scene_id'] > 0 ){
+			$this->db->where('id', $data['scene_id']);
+			$this->db->update("scenes", $data['scene_data']);
 			
 			if($this->db->affected_rows() > 0){
 				$result = true;

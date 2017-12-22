@@ -86,28 +86,38 @@ Vue.component('vdm-thread-component', {
 			});
 		},
 		deleteThread (tread_index, thread_id){
-			this.$Loading.start();
-			var vdmComponent = this;
-			var formData = {
-						action:"delete_thread", 
-						data:{
-							"adventure_id": vdmComponent.adventure_id,
-							"thread_id":thread_id,
-						},
-					};
-			$.ajax({
-				url : vdmComponent.ajax_url,
-				type: "POST",
-				data : formData,
-				dataType:"json",
-				success: function(data){
-					if(data.status == 1){
-						vdmComponent.threads_list.splice(tread_index, 1);
-						vdmComponent.$Loading.finish();
-					}else{
-						vdmComponent.$Loading.error();
-					}
-					vdmComponent.$Message.info(data.message);
+			this.$Modal.confirm({
+				title: 'Delete Thread / Quest',
+				okText: 'Delete',
+                cancelText: 'Cancel',
+				content: '<div class="alert alert-danger">Are you sure you want to delete this thread / quest ?</div>',
+				loading: true,
+				onOk: () => {
+					this.$Loading.start();
+					var vdmComponent = this;
+					var formData = {
+							action:"delete_thread", 
+							data:{
+								"adventure_id": vdmComponent.adventure_id,
+								"thread_id":thread_id,
+							},
+						};
+					$.ajax({
+						url : vdmComponent.ajax_url,
+						type: "POST",
+						data : formData,
+						dataType:"json",
+						success: function(data){
+							if(data.status == 1){
+								vdmComponent.threads_list.splice(tread_index, 1);
+								vdmComponent.$Loading.finish();
+								vdmComponent.$Modal.remove();
+							}else{
+								vdmComponent.$Loading.error();
+							}
+							vdmComponent.$Message.info(data.message);
+						}
+					});
 				}
 			});
 		},
