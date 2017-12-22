@@ -419,5 +419,74 @@ class Main_model extends CI_Model {
 		return $result;
 	}
    
+   public function get_threads($data=[]){
+		$result = false;
+		if( $data['adventure_id'] > 0 ){
+			$this->db->select('id, name, description');
+			$this->db->where('adventure_id', $data['adventure_id']);
+			$this->db->where('status', 1);
+			$query = $this->db->get('threads');
+			
+			if($query->num_rows() > 0){
+				$result = $query->result();
+			}
+		}
+		
+		return $result;
+	}
+	
+	public function insert_thread($data=[]){
+		$this->db->insert('threads', $data);
+		return  $this->db->insert_id();
+	}
+	
+	public function update_thread($data=[]){
+		$result = false;
+		if( $data['thread_id'] > 0 ){
+			$this->db->where('id', $data['thread_id']);
+			$this->db->update("threads", $data['thread_data']);
+			
+			if($this->db->affected_rows() > 0){
+				$result = true;
+			}
+		}
+		
+		return $result;
+	}
+	
+	public function get_characters($data=[]){
+		$result = false;
+		if( $data['adventure_id'] > 0 ){
+			$this->db->select('id, name, description');
+			$this->db->where('adventure_id', $data['adventure_id']);
+			$this->db->where('status', 1);
+			$query = $this->db->get('characters');
+			
+			if($query->num_rows() > 0){
+				$result = $query->result();
+			}
+		}
+		
+		return $result;
+	}
+	
+	public function insert_character($data=[]){
+		$this->db->insert('characters', $data);
+		return  $this->db->insert_id();
+	}
+   
+	public function update_character($data=[]){
+		$result = false;
+		if( $data['character_id'] > 0 ){
+			$this->db->where('id', $data['character_id']);
+			$this->db->update("characters", $data['character_data']);
+			
+			if($this->db->affected_rows() > 0){
+				$result = true;
+			}
+		}
+		
+		return $result;
+	}
 }
 ?>

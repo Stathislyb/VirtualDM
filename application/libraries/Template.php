@@ -8,6 +8,7 @@ class Template{
     private $css_file;
 	private $favicon_file;
     private $CI;
+	private $pages;
 
     public function __construct(){
         $this->CI =& get_instance();
@@ -34,22 +35,29 @@ class Template{
 		
 		$this->addFavicon( base_url('assets/favicon.ico') );
     }
-
-    public function show( $folder, $page, $data=null, $menu=true ){
+	
+	public function addView( $folder, $page, $data=null){
 	
         if ( ! file_exists('application/views/'.$folder.'/'.$page.'.php' ) ){
             show_404();
         }else{
             $this->template_data['data'] = $data;
-            $this->load_JS_and_css();
-            $this->init_menu();
 
-            if ($menu)
-                $this->template_data['nav_bar'] = $this->CI->load->view('template/menu.php', $this->template_data, true);
-
-            $this->template_data['content'] .= $this->CI->load->view($folder.'/'.$page.'.php', $this->template_data, true);
-            $this->CI->load->view('template/template.php', $this->template_data);
+            $this->pages .= $this->CI->load->view($folder.'/'.$page.'.php', $this->template_data, true);
+			
         }
+    }
+	
+    public function showViews($menu=true){
+		$this->load_JS_and_css();
+		$this->init_menu();
+
+		if ($menu)
+			$this->template_data['nav_bar'] = $this->CI->load->view('template/menu.php', $this->template_data, true);
+
+		$this->template_data['content'] .= $this->pages;
+		$this->CI->load->view('template/template.php', $this->template_data);
+	
     }
 
     public function addJS( $name ){

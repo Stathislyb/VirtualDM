@@ -49,7 +49,7 @@ var html = `
 						<h3 class="card-header">Dice Result</h3>
 						<div class="card-block">
 							<h3 class="card-title">Rolled : 
-								<span data-toggle="tooltip" data-placement="top" title="Lower is better">
+								<span data-toggle="tooltip" data-animation="false" data-placement="top" title="Lower is better">
 									{{result}} ( {{threshold}}% )
 								</span>
 							</h3>
@@ -71,42 +71,8 @@ var html = `
 			</div> 
 		
 		<div class="col-md-4">
-			<div class="col-md-12 mb-4">
-				<h3>List of Threads / Quests</h3>
-				<button type="button"
-					v-on:click="createThread" 
-					class="list-group-item pointer form-control bg-light-gray" data-toggle="tooltip" data-original-title="Add New Thread or Quest" >
-					<i class="fa fa-plus centered" aria-hidden="true"></i>
-				</button>
-				<div class="list-group list-container slim-scrollbar">
-					<span v-for="(thread, index) in threads_list" :key="thread.id">
-						<button type="button"
-							v-on:click="deleteThread(index)" 
-							class="list-group-item pointer float-right delete-btn">
-							<i class="fa fa-trash-o centered" aria-hidden="true"></i>
-						</button>
-						<a class="list-group-item">{{thread.label}}</a>
-					</span>
-				</div>
-			</div>
-			<div class="col-md-12">
-				<h3>List of Characters</h3>
-				<button type="button"
-					v-on:click="createCharacter" 
-					class="list-group-item pointer form-control bg-light-gray" data-toggle="tooltip" data-original-title="Add New Character" >
-					<i class="fa fa-plus centered" aria-hidden="true"></i>
-				</button>
-				<div class="list-group list-container slim-scrollbar">
-					<span v-for="(character, index) in characters_list" :key="character.id">
-						<button type="button"
-							v-on:click="deleteCharacter(index)" 
-							class="list-group-item pointer float-right delete-btn">
-							<i class="fa fa-trash-o centered" aria-hidden="true"></i>
-						</button>
-						<a class="list-group-item">{{character.label}}</a>
-					</span>
-				</div>
-			</div>
+			<vdm-thread-component></vdm-thread-component>
+			<vdm-character-component></vdm-character-component>
 		</div>
 	</div>
 `;
@@ -166,18 +132,67 @@ Vue.component('vdm-component', {
 				description:'New scene description',
 			});
 		},
-		deleteThread (tread_index){
-			this.threads_list.splice(tread_index, 1);
+		createThreadModal(){
+			var vdmComponent = this;
+			this.$Modal.confirm({
+				title: 'Create New Thread / Quest',
+				okText: 'Create',
+                cancelText: 'Cancel',
+				content: '<div class="form-group"><label for="usr">Thread / Quest Name :</label>'+
+						'<input type="text" class="form-control" id="new_tread_name" placeholder="Thread / Quest name"></Input>'+
+						'</div><div class="form-group"><label for="usr">Thread / Quest description :</label>'+
+					    '<textarea class="form-control" id="new_tread_description" :rows="4" placeholder="Thread / Quest description or summary"></textarea ></div>'+
+						'<div class="alert alert-danger hidden modal-error"> </div>',
+				loading: true,
+				onOk: () => {
+					var thread_name = $('#new_tread_name').val();
+					var thread_description = $('#new_tread_description').val();
+					var formData = {
+						action:"create_thread", 
+						data:{
+							"adventure_id": vdmComponent.adventure_id,
+							"thread_name":thread_name,
+							"thread_description":thread_description,
+						},
+					};
+					$.ajax({
+						url : vdmComponent.ajax_url,
+						type: "POST",
+						data : formData,
+						dataType:"json",
+						success: function(data){
+							if( data.status == 1){
+								var thread_item = {thread_name:thread_name, thread_description:thread_description}
+								vdmComponent.createThread({
+									thread_id:data.insert_id,
+									thread_name:thread_name, 
+									thread_description:thread_description
+								});
+								vdmComponent.$Modal.remove();
+								vdmComponent.$Message.info(data.message);
+							}else{
+								$('.ivu-btn-loading').find('i.ivu-load-loop').remove();
+								$('.ivu-btn-loading').removeClass('ivu-btn-loading');
+								$('.modal-error').html(data.message).show();
+							}
+						}
+					});
+				}
+			});
 		},
-		createThread (){
+		createThread (new_thread){
 			var next_id = 1;
 			if( this.threads_list.length > 0 ){
 				next_id = this.threads_list[this.threads_list.length-1].id+1;
 			}
 			this.threads_list.push({
-				id : next_id, 
-				label:'New Thread',
+				id : new_thread.thread_id, 
+				title:new_thread.thread_name,
+				description:new_thread.thread_description,
 			});
+		},
+		deleteThread (tread_index){
+			this.threads_list.splice(tread_index, 1);
 		},
 		deleteCharacter (character_index){
 			this.characters_list.splice(character_index, 1);
@@ -189,7 +204,7 @@ Vue.component('vdm-component', {
 			}
 			this.characters_list.push({
 				id : next_id, 
-				label:'New Character',
+				title:'New Character',
 			});
 		},
 	},

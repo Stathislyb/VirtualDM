@@ -15,7 +15,7 @@
   
 	<div class="container">
 		<div id="vdm-app">
-			<vdm-component></dm-component>
+			<vdm-component></vdm-component>
 		</div>
 		<?php echo $content; ?>
     </div>
