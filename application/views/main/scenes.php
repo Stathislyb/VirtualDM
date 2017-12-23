@@ -105,7 +105,10 @@ Vue.component('vdm-scene-component', {
 							vdmComponent.$Message.info(data.message);
 						}
 					});
-				}
+				},
+				onCancel: () => {
+					location.reload();
+				},
 			});
 		},
 	},
