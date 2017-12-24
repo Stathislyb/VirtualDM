@@ -14,7 +14,7 @@ var html = `
 					class="list-group-item pointer float-right delete-btn">
 					<i class="fa fa-trash-o centered" aria-hidden="true"></i>
 				</button>
-				<a class="list-group-item">{{thread.title}}</a>
+				<a v-on:click="editThreadModal(thread.id)" class="list-group-item">{{thread.title}}</a>
 			</span>
 		</div>
 	</div>
@@ -27,6 +27,53 @@ Vue.component('vdm-thread-component', {
 		return <?php echo $data['app_data'] ?>
 	},
 	methods:{
+		editThreadModal(threadID){
+			var threadIndex = this.getThreadById(threadID);
+			var thread_obj = this.threads_list[threadIndex];
+			var vdmComponent = this;
+			this.$Modal.confirm({
+				title: 'Edit Thread / Quest',
+				okText: 'Save',
+                cancelText: 'Cancel',
+				content: '<div class="form-group"><label for="usr">Thread / Quest Name :</label>'+
+						'<input type="text" class="form-control" value="'+thread_obj.title+'" id="new_tread_name" placeholder="Thread / Quest name"></Input>'+
+						'</div><div class="form-group"><label for="usr">Thread / Quest description :</label>'+
+					    '<textarea class="form-control" id="new_tread_description" :rows="4" placeholder="Thread / Quest description or summary">'+thread_obj.description+'</textarea ></div>'+
+						'<div class="alert alert-danger hidden modal-error"> </div>',
+				loading: true,
+				onOk: () => {
+					var thread_name = $('#new_tread_name').val();
+					var thread_description = $('#new_tread_description').val();
+					var formData = {
+						action:"edit_thread", 
+						data:{
+							"adventure_id": vdmComponent.adventure_id,
+							"thread_id":threadID,
+							"thread_name":thread_name,
+							"thread_description":thread_description,
+						},
+					};
+					$.ajax({
+						url : vdmComponent.ajax_url,
+						type: "POST",
+						data : formData,
+						dataType:"json",
+						success: function(data){
+							if( data.status == 1){
+								vdmComponent.threads_list[threadIndex].title = thread_name;
+								vdmComponent.threads_list[threadIndex].description = thread_description;
+								vdmComponent.$Modal.remove();
+								vdmComponent.$Notice.success({title: data.message});
+							}else{
+								$('.ivu-btn-loading').find('i.ivu-load-loop').remove();
+								$('.ivu-btn-loading').removeClass('ivu-btn-loading');
+								vdmComponent.$Notice.error({title: data.message});
+							}
+						}
+					});
+				}
+			});
+		},
 		createThreadModal(){
 			var vdmComponent = this;
 			this.$Modal.confirm({
@@ -64,11 +111,11 @@ Vue.component('vdm-thread-component', {
 									thread_description:thread_description
 								});
 								vdmComponent.$Modal.remove();
-								vdmComponent.$Message.info(data.message);
+								vdmComponent.$Notice.success({title: data.message});
 							}else{
 								$('.ivu-btn-loading').find('i.ivu-load-loop').remove();
 								$('.ivu-btn-loading').removeClass('ivu-btn-loading');
-								$('.modal-error').html(data.message).show();
+								vdmComponent.$Notice.error({title: data.message});
 							}
 						}
 					});
@@ -112,15 +159,25 @@ Vue.component('vdm-thread-component', {
 								vdmComponent.threads_list.splice(tread_index, 1);
 								vdmComponent.$Loading.finish();
 								vdmComponent.$Modal.remove();
+								vdmComponent.$Notice.success({title: data.message});
 							}else{
 								vdmComponent.$Loading.error();
+								vdmComponent.$Notice.error({title: data.message});
 							}
-							vdmComponent.$Message.info(data.message);
 						}
 					});
 				}
 			});
 		},
+		getThreadById(threadID){
+			var threadIndex = -1;
+			this.threads_list.forEach((thread, index) => {
+			  if (thread.id == threadID) {
+				threadIndex = index;
+			  }
+			});
+			return threadIndex;
+		}
 	},
 	template: html,
 });

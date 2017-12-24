@@ -7,6 +7,8 @@
 .centered{margin: 0 auto;}
 .bg-light-gray{background-color: #f5f5f5;}
 .hidden{display:none;}
+.min-210{min-width:210px;}
+.no-outline, .no-outline:focus{box-shadow: none;-webkit-box-shadow:none; border: none;}
 
 .rank-links button{max-width:200px;}
 .title-label{font-size: 1.75rem;font-weight: 600;}
@@ -42,4 +44,20 @@
 .slim-scrollbar::-webkit-scrollbar-thumb{
 	background-color: #616161;
     border-radius: 10px;
+}
+
+.scene-description{
+	background-color: #fbfbfb;
+    padding: 15px;
+    font-size: 1.4em;
+    margin-top: 1em;
+}
+
+.el-tabs__new-tab{
+	height: 22px;
+    width: 22px;
+    line-height: 22px;
+	color: #143c69;
+	font-size: 18px;
+	border-color: #989b9e;
 }

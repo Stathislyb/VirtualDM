@@ -14,7 +14,7 @@ var html = `
 					class="list-group-item pointer float-right delete-btn">
 					<i class="fa fa-trash-o centered" aria-hidden="true"></i>
 				</button>
-				<a class="list-group-item">{{character.title}}</a>
+				<a v-on:click="editCharacterModal(character.id)"  class="list-group-item">{{character.title}}</a>
 			</span>
 		</div>
 	</div>
@@ -27,6 +27,53 @@ Vue.component('vdm-character-component', {
 		return <?php echo $data['app_data'] ?>
 	},
 	methods:{
+		editCharacterModal(characterID){
+			var characterIndex = this.getCharacterById(characterID);
+			var character_obj = this.characters_list[characterIndex];
+			var vdmComponent = this;
+			this.$Modal.confirm({
+				title: 'Edit Character',
+				okText: 'Save',
+                cancelText: 'Cancel',
+				content: '<div class="form-group"><label for="usr">Character Name :</label>'+
+						'<input type="text" class="form-control" value="'+character_obj.title+'" id="new_character_name" placeholder="Character name"></Input>'+
+						'</div><div class="form-group"><label for="usr">Character description :</label>'+
+					    '<textarea class="form-control" id="new_character_description" :rows="4" placeholder="Character description">'+character_obj.description+'</textarea ></div>'+
+						'<div class="alert alert-danger hidden modal-error"> </div>',
+				loading: true,
+				onOk: () => {
+					var character_name = $('#new_character_name').val();
+					var character_description = $('#new_character_description').val();
+					var formData = {
+						action:"edit_character", 
+						data:{
+							"adventure_id":vdmComponent.adventure_id,
+							"character_id":characterID,
+							"character_name":character_name,
+							"character_description":character_description,
+						},
+					};
+					$.ajax({
+						url : vdmComponent.ajax_url,
+						type: "POST",
+						data : formData,
+						dataType:"json",
+						success: function(data){
+							if( data.status == 1){
+								vdmComponent.characters_list[characterIndex].title = character_name;
+								vdmComponent.characters_list[characterIndex].description = character_description;
+								vdmComponent.$Modal.remove();
+								vdmComponent.$Notice.success({title: data.message});
+							}else{
+								$('.ivu-btn-loading').find('i.ivu-load-loop').remove();
+								$('.ivu-btn-loading').removeClass('ivu-btn-loading');
+								vdmComponent.$Notice.error({title: data.message});
+							}
+						}
+					});
+				}
+			});
+		},
 		createCharacterModal(){
 			var vdmComponent = this;
 			this.$Modal.confirm({
@@ -57,18 +104,17 @@ Vue.component('vdm-character-component', {
 						dataType:"json",
 						success: function(data){
 							if( data.status == 1){
-								var character_item = {character_name:character_name, character_description:character_description}
 								vdmComponent.createCharacter({
 									character_id:data.insert_id,
 									character_name:character_name, 
 									character_description:character_description
 								});
 								vdmComponent.$Modal.remove();
-								vdmComponent.$Message.info(data.message);
+								vdmComponent.$Notice.success({title: data.message});
 							}else{
 								$('.ivu-btn-loading').find('i.ivu-load-loop').remove();
 								$('.ivu-btn-loading').removeClass('ivu-btn-loading');
-								$('.modal-error').html(data.message).show();
+								vdmComponent.$Notice.error({title: data.message});
 							}
 						}
 					});
@@ -112,15 +158,25 @@ Vue.component('vdm-character-component', {
 								vdmComponent.characters_list.splice(character_index, 1);
 								vdmComponent.$Loading.finish();
 								vdmComponent.$Modal.remove();
+								vdmComponent.$Notice.success({title: data.message});
 							}else{
 								vdmComponent.$Loading.error();
+								vdmComponent.$Notice.error({title: data.message});
 							}
-							vdmComponent.$Message.info(data.message);
 						}
 					});
 				}
 			});
 		},
+		getCharacterById(characterID){
+			var characterIndex = -1;
+			this.characters_list.forEach((character, index) => {
+			  if (character.id == characterID) {
+				characterIndex = index;
+			  }
+			});
+			return characterIndex;
+		}
 	},
 	template: html,
 });

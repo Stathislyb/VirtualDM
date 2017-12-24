@@ -31,7 +31,7 @@ var html = `
 				<div class="col-md-3 no-padding">
 					<button type="button" 
 						v-on:click="generateEvent()" 
-						class="col btn btn-outline-danger pointer mt-3"  >
+						class="col btn btn-outline-danger pointer mt-3 min-210"  >
 						Generate Random Event
 					</button>
 				</div>

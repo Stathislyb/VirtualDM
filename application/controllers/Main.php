@@ -26,10 +26,13 @@ class Main extends CI_Controller {
 				);
 			}
 		}
+		$active_scene_id = 1;
 		$scenes_data = array(
 			'ajax_url' => base_url().'index.php/Main/handle_post',
 			'adventure_id' =>1,
 			'scenes' => $scenes_list,
+			'activeScene' => $active_scene_id, 
+			'selectedTab' => 'scene_'.$active_scene_id,	
 		);
 		
 		// get the threads' data and prepare to pass them to the component
@@ -95,7 +98,7 @@ class Main extends CI_Controller {
 				'title' => '',
 				'meaning' => '',
 				'description' => '',
-			)
+			),
 		);
 		
 		$data['app_data'] = json_encode ( $scenes_data );
@@ -128,6 +131,50 @@ class Main extends CI_Controller {
 				'description'=> $data['thread_description'],
 			);
 			$insert_id = $this->Main_model->insert_thread($insert_data);
+			
+			$this->db->trans_complete();
+			$message = "The thread was created successfully";
+			$status = 1 ;
+		} catch (Exception $e) {
+			$this->db->trans_rollback();
+			$status = 0 ;
+			$message = $e->getMessage();
+			$insert_id = 0;
+		}
+		
+		$result = array(
+			'status' => $status,
+			'message' => $message,
+			'insert_id'=> $insert_id,
+		);
+		
+		echo json_encode($result);
+    }
+	
+	public function edit_thread( $data = [] ){
+		$data = $this->security->xss_clean($data);
+		try {
+			$this->db->trans_start();
+			
+			if ( $data['adventure_id'] != 1 ) {
+				throw new Exception('Wrong adventure id.');
+			}
+			if ( $data['thread_id'] != 1 ) {
+				throw new Exception('Wrong quest id.');
+			}
+			if ( empty(trim($data['thread_name'])) ) {
+				throw new Exception('Please fill the quest\'s name.');
+			}
+			
+			$update_data = array(
+				'adventure_id'=> $data['adventure_id'],
+				'thread_id'=> $data['thread_id'],
+				'thread_data' => array(
+					'name'=> $data['thread_name'],
+					'description'=> $data['thread_description'],
+				),
+			);
+			$insert_id = $this->Main_model->update_thread($update_data);
 			
 			$this->db->trans_complete();
 			$message = "The thread was created successfully";
@@ -224,6 +271,49 @@ class Main extends CI_Controller {
 		echo json_encode($result);
     }
 	
+	public function edit_character( $data = [] ){
+		$data = $this->security->xss_clean($data);
+		try {
+			$this->db->trans_start();
+			
+			if ( $data['adventure_id'] != 1 ) {
+				throw new Exception('Wrong adventure id.');
+			}
+			if ( !($data['character_id'] >0) ) {
+				throw new Exception('Wrong character id.');
+			}
+			if ( empty(trim($data['character_name'])) ) {
+				throw new Exception('Please fill the character\'s name.');
+			}
+			
+			$update_data = array(
+				'character_id'=> $data['adventure_id'],
+				'character_data' => array(
+					'name'=> $data['character_name'],
+					'description'=> $data['character_description'],
+				),
+			);
+			$insert_id = $this->Main_model->update_character($update_data);
+			
+			$this->db->trans_complete();
+			$message = "The character was updated successfully";
+			$status = 1 ;
+		} catch (Exception $e) {
+			$this->db->trans_rollback();
+			$status = 0 ;
+			$message = $e->getMessage();
+			$insert_id = 0;
+		}
+		
+		$result = array(
+			'status' => $status,
+			'message' => $message,
+			'insert_id'=> $insert_id,
+		);
+		
+		echo json_encode($result);
+    }
+	
 	public function delete_character( $data = [] ){
 		$data = $this->security->xss_clean($data);
 		try {
@@ -300,6 +390,49 @@ class Main extends CI_Controller {
 		echo json_encode($result);
     }
 	
+	public function edit_scene( $data = [] ){
+		$data = $this->security->xss_clean($data);
+		try {
+			$this->db->trans_start();
+			
+			if ( $data['adventure_id'] != 1 ) {
+				throw new Exception('Wrong adventure id.');
+			}
+			if ( !($data['scene_id'] > 0) ) {
+				throw new Exception('Wrong scene id.');
+			}
+			if ( empty(trim($data['scene_name'])) ) {
+				throw new Exception('Please fill the scene\'s name.');
+			}
+			
+			$update_data = array(
+				'scene_id'=> $data['scene_id'],
+				'scene_data' => array(
+					'name'=> $data['scene_name'],
+					'description'=> $data['scene_description'],
+				),
+			);
+			$insert_id = $this->Main_model->update_scene($update_data);
+			
+			$this->db->trans_complete();
+			$message = "The scene was updated successfully";
+			$status = 1 ;
+		} catch (Exception $e) {
+			$this->db->trans_rollback();
+			$status = 0 ;
+			$message = $e->getMessage();
+			$insert_id = 0;
+		}
+		
+		$result = array(
+			'status' => $status,
+			'message' => $message,
+			'insert_id'=> $insert_id,
+		);
+		
+		echo json_encode($result);
+    }
+	
 	public function delete_scene( $data = [] ){
 		$data = $this->security->xss_clean($data);
 		try {
@@ -343,16 +476,22 @@ class Main extends CI_Controller {
 		$action = $this->input->post('action');
 		if( $action == 'create_thread' ){
 			$this->create_thread( $this->input->post('data') );
+		}elseif( $action == 'edit_thread' ){
+			$this->edit_thread( $this->input->post('data') );
 		}elseif( $action == 'delete_thread' ){
 			$this->delete_thread( $this->input->post('data') );
 		}elseif( $action == 'create_character' ){
 			$this->create_character( $this->input->post('data') );
+		}elseif( $action == 'edit_character' ){
+			$this->edit_character( $this->input->post('data') );
 		}elseif( $action == 'delete_character' ){
 			$this->delete_character( $this->input->post('data') );
 		}elseif( $action == 'create_scene' ){
 			$this->create_scene( $this->input->post('data') );
 		}elseif( $action == 'delete_scene' ){
 			$this->delete_scene( $this->input->post('data') );
+		}elseif( $action == 'edit_scene' ){
+			$this->edit_scene( $this->input->post('data') );
 		}
     }
 }
