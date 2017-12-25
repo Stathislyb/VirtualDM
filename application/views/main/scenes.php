@@ -11,7 +11,7 @@ var html = `
 				v-model="activeScene"
 				:active-value="scene.id"
 				inactive-value="0"
-				active-text="Set scene as active">
+				active-text="Set as active scene">
 			</el-switch>
 			<button type="button"
 				v-on:click="editSceneModal(scene.id)" 
@@ -41,7 +41,7 @@ Vue.component('vdm-scene-component', {
 				okText: 'Save',
                 cancelText: 'Cancel',
 				content: '<div class="form-group"><label for="usr">Scene Title :</label>'+
-						'<input type="text" class="form-control" id="new_scene_name" value="'+scene_obj.title+'" placeholder="Scene title"></Input>'+
+						'<input type="text" class="form-control" id="new_scene_name" value="'+scene_obj.title+'" placeholder="Scene title">'+
 						'</div><div class="form-group"><label for="usr">Scene description :</label>'+
 					    '<textarea class="form-control" id="new_scene_description" :rows="4" placeholder="Scene description or summary">'+scene_obj.description+'</textarea ></div>'+
 						'<div class="alert alert-danger hidden modal-error"> </div>',
@@ -86,7 +86,7 @@ Vue.component('vdm-scene-component', {
 				okText: 'Create',
                 cancelText: 'Cancel',
 				content: '<div class="form-group"><label for="usr">Scene Title :</label>'+
-						'<input type="text" class="form-control" id="new_scene_name" placeholder="Scene title"></Input>'+
+						'<input type="text" class="form-control" id="new_scene_name" placeholder="Scene title">'+
 						'</div><div class="form-group"><label for="usr">Scene description :</label>'+
 					    '<textarea class="form-control" id="new_scene_description" :rows="4" placeholder="Scene description or summary"></textarea ></div>'+
 						'<div class="alert alert-danger hidden modal-error"> </div>',

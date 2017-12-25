@@ -93,6 +93,8 @@ class Main extends CI_Controller {
 			'selected_value' => 0,
 			'result' => 0,
 			'chaos_factor' => 5,
+			'question' => '',
+			'showresult' => false,
 			'event' => array(
 				'show' => false,
 				'title' => '',

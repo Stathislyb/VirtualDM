@@ -36,7 +36,7 @@ Vue.component('vdm-character-component', {
 				okText: 'Save',
                 cancelText: 'Cancel',
 				content: '<div class="form-group"><label for="usr">Character Name :</label>'+
-						'<input type="text" class="form-control" value="'+character_obj.title+'" id="new_character_name" placeholder="Character name"></Input>'+
+						'<input type="text" class="form-control" value="'+character_obj.title+'" id="new_character_name" placeholder="Character name">'+
 						'</div><div class="form-group"><label for="usr">Character description :</label>'+
 					    '<textarea class="form-control" id="new_character_description" :rows="4" placeholder="Character description">'+character_obj.description+'</textarea ></div>'+
 						'<div class="alert alert-danger hidden modal-error"> </div>',
@@ -81,7 +81,7 @@ Vue.component('vdm-character-component', {
 				okText: 'Create',
                 cancelText: 'Cancel',
 				content: '<div class="form-group"><label for="usr">Character Name :</label>'+
-						'<input type="text" class="form-control" id="new_character_name" placeholder="Character name"></Input>'+
+						'<input type="text" class="form-control" id="new_character_name" placeholder="Character name">'+
 						'</div><div class="form-group"><label for="usr">Character description :</label>'+
 					    '<textarea class="form-control" id="new_character_description" :rows="4" placeholder="Character description"></textarea ></div>'+
 						'<div class="alert alert-danger hidden modal-error"> </div>',

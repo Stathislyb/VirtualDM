@@ -26,12 +26,25 @@ var html = `
 						{{ rank.title }}
 					</button>
 				</div>
-			</div> 
+			</div>
 			<div class="col-md-12">
-				<div class="col-md-3 no-padding">
+				<label class="title-label">Type your question:</label>
+				<input  v-on:keydown="resetQuestion" v-on:keyup.enter="getResult()" v-model="question" type="text" class="form-control" id="new_character_name" placeholder="Type a yes or no question">
+			</div> 	
+			<div class="row justify-content-md-center">
+				<div class="col-md-8 mt-3">
+					<button type="button" 
+						v-on:click="getResult()" 
+						class="btn btn-primary pointer form-control" >
+						Ask the DM
+					</button>
+				</div>
+			</div> 			
+			<div class="row justify-content-md-center">
+				<div class="col-md-8 mt-3">
 					<button type="button" 
 						v-on:click="generateEvent()" 
-						class="col btn btn-outline-danger pointer mt-3 min-210"  >
+						class="col btn btn-outline-danger pointer"  >
 						Generate Random Event
 					</button>
 				</div>
@@ -41,12 +54,11 @@ var html = `
 				<div class="col-md-12 card no-padding" v-if="showresult">
 					<h3 class="card-header">Dice Result</h3>
 					<div class="card-block">
-						<h3 class="card-title">Rolled : 
-							<span data-toggle="tooltip" data-animation="false" data-placement="top" title="Lower is better">
-								{{result}} ({{threshold}}%)
-							</span>
-						</h3>
-						<h3>So, {{result_msg}}</h3>
+						<h3 class="card-title "><em>{{question}}</em></h3>
+						<hr/>
+						<h3><span data-toggle="tooltip" data-animation="false" data-placement="top" :data-original-title="rollMessage" :title="rollMessage">
+							{{result_msg}}
+						</span></h3>
 					</div>
 				</div>
 				
@@ -76,17 +88,47 @@ Vue.component('vdm-component', {
 		return <?php echo $data['app_data'] ?>
 	},
 	methods:{
+		resetQuestion:function(event){
+			if(event.key != "Enter"){
+				this.showresult = false;
+			}
+		},
 		selectRank:function(rank){
 			this.ranks.forEach(function(rank_element) {
 				rank_element.selected = false;
 			});
 			rank.selected=true;
-			this.selected_value = rank.value;
-			
-			this.result = this.RollDice(1,100);
+			this.selected_value = rank.value;		
+			this.showresult = false;		
+		},
+		getResult:function(){
+			if(this.threshold > 0 && this.question.trim().length > 1){
+				this.result = this.RollDice(1,100);
+				this.showresult = true;
+				var ajaxData = {
+					action:"log_question", 
+					data:{
+						"adventure_id": this.adventure_id,
+						"scene_id": 1,
+						"question":this.question,
+						"threshold":this.threshold,
+						"result" : this.result,
+						"reply" : this.result_msg,
+					},
+				};
+				this.updateDatabase(ajaxData);
+			}else{
+				if( this.selected_value == 0 ){
+					this.$Notice.error({title: 'Please select the odds'});
+				}
+				if( this.question.trim().length <= 1 ){
+					this.$Notice.error({title: 'Please type a question'});
+				}
+			}
 		},
 		setChaos:function(chaos){
 			this.chaos_factor = chaos;
+			this.showresult = false;
 		},
 		generateEvent:function(){
 			var focus_dice = this.RollDice(1,100);
@@ -116,12 +158,31 @@ Vue.component('vdm-component', {
 			}
 			return active;
 		},
+		updateDatabase: function(ajaxData, successCallback = function(){}, failCallback  = function(){}){
+			$.ajax({
+				url : this.ajax_url,
+				type: "POST",
+				data : ajaxData,
+				dataType:"json",
+				success: function(data){
+					if( data.status == 1){
+						successCallback();
+						this.$Notice.success({title: data.message});
+					}else{
+						failCallback();
+						this.$Notice.error({title: data.message});
+					}
+				}
+			});
+		},
 	},
 	watch:{
 		showresult: function(){
-			this.$nextTick(function() {  
-				init_basics();
-			});
+			if(this.showresult){
+				this.$nextTick(function() {  
+					init_basics();
+				});
+			}
 		},
 		result: function(){
 			var make_event = false;
@@ -138,6 +199,11 @@ Vue.component('vdm-component', {
 			}else{
 				this.event.show = false;
 			}
+		},
+		question: function(){
+			var question_marked = this.question.replace(/ ?\?/g, '') + ' ?';
+			if (this.question != question_marked && this.question.trim().length > 1) 
+				this.question = question_marked;
 		},
 	},
 	computed: {
@@ -181,12 +247,8 @@ Vue.component('vdm-component', {
 			}
 			return message;
 		},
-		showresult: function(){
-			var show = false;
-			if(this.result > 0 && this.threshold > 0){
-				show = true;
-			}
-			return show;
+		rollMessage: function(){
+			return 'Rolled : '+this.result+' ('+this.threshold+'%)';
 		},
 	},
 	template: html,

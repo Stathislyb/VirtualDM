@@ -36,7 +36,7 @@ Vue.component('vdm-thread-component', {
 				okText: 'Save',
                 cancelText: 'Cancel',
 				content: '<div class="form-group"><label for="usr">Thread / Quest Name :</label>'+
-						'<input type="text" class="form-control" value="'+thread_obj.title+'" id="new_tread_name" placeholder="Thread / Quest name"></Input>'+
+						'<input type="text" class="form-control" value="'+thread_obj.title+'" id="new_tread_name" placeholder="Thread / Quest name">'+
 						'</div><div class="form-group"><label for="usr">Thread / Quest description :</label>'+
 					    '<textarea class="form-control" id="new_tread_description" :rows="4" placeholder="Thread / Quest description or summary">'+thread_obj.description+'</textarea ></div>'+
 						'<div class="alert alert-danger hidden modal-error"> </div>',
@@ -81,7 +81,7 @@ Vue.component('vdm-thread-component', {
 				okText: 'Create',
                 cancelText: 'Cancel',
 				content: '<div class="form-group"><label for="usr">Thread / Quest Name :</label>'+
-						'<input type="text" class="form-control" id="new_tread_name" placeholder="Thread / Quest name"></Input>'+
+						'<input type="text" class="form-control" id="new_tread_name" placeholder="Thread / Quest name">'+
 						'</div><div class="form-group"><label for="usr">Thread / Quest description :</label>'+
 					    '<textarea class="form-control" id="new_tread_description" :rows="4" placeholder="Thread / Quest description or summary"></textarea ></div>'+
 						'<div class="alert alert-danger hidden modal-error"> </div>',
