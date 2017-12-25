@@ -5,7 +5,7 @@ var html = `
 		<div class="col-md-8">
 			<div class="col-md-12">
 				<label class="title-label">Chaos:</label>
-				<div class="chaos-select" >
+				<div class="chaos-select row justify-content-md-center" >
 					<button type="button"
 						v-for="i in 9" 
 						v-on:click="setChaos(i)" 
@@ -17,11 +17,11 @@ var html = `
 			</div> 
 			<div class="col-md-12">
 				<label class="title-label">Select the Odds:</label>
-				<div class="rank-links">
+				<div class="rank-links row justify-content-md-center">
 					<button type="button" 
 						v-for="rank in ranks" 
 						v-on:click="selectRank(rank)" 
-						class="col btn btn-outline-primary pointer mr-2 mb-1" 
+						class="col-3 btn btn-outline-primary pointer mr-2 mb-1" 
 						v-bind:class="{ active: rank.selected }" >
 						{{ rank.title }}
 					</button>
@@ -29,13 +29,13 @@ var html = `
 			</div>
 			<div class="col-md-12">
 				<label class="title-label">Type your question:</label>
-				<input  v-on:keydown="resetQuestion" v-on:keyup.enter="getResult()" v-model="question" type="text" class="form-control" id="new_character_name" placeholder="Type a yes or no question">
 			</div> 	
 			<div class="row justify-content-md-center">
-				<div class="col-md-8 mt-3">
+				<div class="col-md-8">
+					<input  v-on:keydown="resetQuestion" v-on:keyup.enter="getResult()" v-model="question" type="text" class="form-control" id="new_character_name" placeholder="Type a yes or no question">
 					<button type="button" 
 						v-on:click="getResult()" 
-						class="btn btn-primary pointer form-control" >
+						class="btn btn-primary pointer form-control mt-3" >
 						Ask the DM
 					</button>
 				</div>
@@ -103,8 +103,15 @@ Vue.component('vdm-component', {
 		},
 		getResult:function(){
 			if(this.threshold > 0 && this.question.trim().length > 1){
+				// add question mark in the end if there is none
+				var question_marked = this.question.replace(/ ?\?/g, '') + ' ?';
+				if (this.question != question_marked) {
+					this.question = question_marked;
+				}
+				// get the result
 				this.result = this.RollDice(1,100);
 				this.showresult = true;
+				// log the question - reply
 				var ajaxData = {
 					action:"log_question", 
 					data:{
@@ -199,11 +206,6 @@ Vue.component('vdm-component', {
 			}else{
 				this.event.show = false;
 			}
-		},
-		question: function(){
-			var question_marked = this.question.replace(/ ?\?/g, '') + ' ?';
-			if (this.question != question_marked && this.question.trim().length > 1) 
-				this.question = question_marked;
 		},
 	},
 	computed: {
