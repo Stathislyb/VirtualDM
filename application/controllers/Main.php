@@ -85,6 +85,7 @@ class Main extends CI_Controller {
 		$app_data = array(
 			'ajax_url' => base_url().'index.php/Main/handle_post',
 			'adventure_id' =>1,
+			'selected_scene' => 1,
 			'ranks' => $ranks,
 			'focus' => $focus,
 			'actions' => $actions,
@@ -568,25 +569,29 @@ class Main extends CI_Controller {
 			);
 			
 			$questions = $this->Main_model->get_questions($select_data);
-			foreach($questions as $question){
-				$logs[] = array(
-					'type' => 'log_question',
-					'textMain' =>  $question->question,
-					'textSub' => $question->reply,
-					'tooltip' => $question->result.' ('.$question->threshold.'%)',
-					'date' => $question->created_date,
-				);
+			if($questions !== false){
+				foreach($questions as $question){
+					$logs[] = array(
+						'type' => 'log_question',
+						'textMain' =>  $question->question,
+						'textSub' => $question->reply,
+						'tooltip' => $question->result.' ('.$question->threshold.'%)',
+						'date' => $question->created_date,
+					);
+				}
 			}
 			
 			$events = $this->Main_model->get_events($select_data);
-			foreach($events as $event){
-				$logs[] = array(
-					'type' => 'log_event',
-					'textMain' =>  $event->title,
-					'textSub' => $event->description,
-					'tooltip' => NULL,
-					'date' => $event->created_date,
-				);
+			if($events !== false){
+				foreach($events as $event){
+					$logs[] = array(
+						'type' => 'log_event',
+						'textMain' =>  $event->title,
+						'textSub' => $event->description,
+						'tooltip' => NULL,
+						'date' => $event->created_date,
+					);
+				}
 			}
 			
 			$this->db->trans_complete();

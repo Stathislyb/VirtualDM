@@ -1,7 +1,7 @@
 <script>
 var html = `
 	<div class="row mt-5">
-		<vdm-scene-component></vdm-scene-component>
+		<vdm-scene-component @sceneChangeEvent="updateSelectedScene"></vdm-scene-component>
 		<div class="col-md-8">
 			<div class="col-md-12">
 				<label class="title-label">Chaos:</label>
@@ -108,6 +108,11 @@ Vue.component('vdm-component', {
 				this.showresult = false;
 			}
 		},
+		updateSelectedScene: function(sceneID){
+			if(sceneID > 0){
+				this.selected_scene = sceneID;
+			}
+		},
 		selectRank:function(rank){
 			this.ranks.forEach(function(rank_element) {
 				rank_element.selected = false;
@@ -131,7 +136,7 @@ Vue.component('vdm-component', {
 					action:"log_question", 
 					data:{
 						"adventure_id": this.adventure_id,
-						"scene_id": 1,
+						"scene_id": this.selected_scene,
 						"question":this.question,
 						"threshold":this.threshold,
 						"result" : this.result,
@@ -182,7 +187,7 @@ Vue.component('vdm-component', {
 				action:"log_event", 
 				data:{
 					"adventure_id": this.adventure_id,
-					"scene_id": 1,
+					"scene_id": this.selected_scene,
 					"title": focus_title,
 					"description": this.event.meaning,
 				},
@@ -204,10 +209,11 @@ Vue.component('vdm-component', {
 				action:"get_logs", 
 				data:{
 					"adventure_id": this.adventure_id,
-					"scene_id": 1,
+					"scene_id": this.selected_scene,
 					"last_update": this.lastLogUpdate,
 				},
 			};
+			console.log(ajaxData.data);
 			var vdmComponent = this;
 			this.makeAjaxCall(ajaxData, function(data){
 				if(data.data != false){
@@ -218,9 +224,7 @@ Vue.component('vdm-component', {
 						vdmComponent.logs.push(log_item);
 					});
 					vdmComponent.sortLogs();
-					vdmComponent.$nextTick(function() {  
-						init_basics();
-					});
+					vdmComponent.refreshjQueryBasic();
 				}
 			});
 		},
@@ -244,13 +248,23 @@ Vue.component('vdm-component', {
 				}
 			});
 		},
+		refreshjQueryBasic:function(){
+			this.$nextTick(function() {  
+				init_basics();
+			});
+		},
 	},
 	watch:{
+		selected_scene: function(){
+			if(this.selected_scene > 0){
+				this.lastLogUpdate = 0;
+				this.logs = [];
+				this.updateLogs();
+			}
+		},
 		showresult: function(){
 			if(this.showresult){
-				this.$nextTick(function() {  
-					init_basics();
-				});
+				this.refreshjQueryBasic();
 			}
 		},
 		result: function(){

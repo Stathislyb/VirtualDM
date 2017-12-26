@@ -8,6 +8,15 @@
 
 	<!-- load header CSS/JS files -->
 	<?php echo $html_head; ?>
+	
+	<script>
+		$(document).ready(function(){
+			init_basics();
+		});
+		function init_basics(){
+			$('[data-toggle="tooltip"]').tooltip(); 
+		}
+	</script>
 	 
   </head>
   <body>
@@ -26,14 +35,6 @@
 		var vdm_main = new Vue({
 			el:'#vdm-app',
 		})
-	</script>
-	<script>
-		$(document).ready(function(){
-			init_basics();
-		});
-		function init_basics(){
-			$('[data-toggle="tooltip"]').tooltip(); 
-		}
 	</script>
   </body>
 </html>

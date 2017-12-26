@@ -195,6 +195,11 @@ Vue.component('vdm-scene-component', {
 			return sceneIndex;
 		}
 	},
+	watch:{
+		activeScene: function(){
+			this.$emit('sceneChangeEvent', this.activeScene);
+		},
+	},
 	template: html,
 });
 
