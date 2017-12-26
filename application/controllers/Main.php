@@ -97,6 +97,8 @@ class Main extends CI_Controller {
 		$app_data = array(
 			'ajax_url' => base_url().'index.php/Main/handle_post',
 			'adventure_id' => $adventure_id,
+			'adventureName' => $adventure->name,
+			'adventureDescription' => $adventure->description,
 			'selected_scene' => $selected_scene,
 			'ranks' => $ranks,
 			'focus' => $focus,

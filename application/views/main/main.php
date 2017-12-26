@@ -1,6 +1,13 @@
 <script>
 var html = `
 	<div class="row mt-5">
+		<div class="col-md-12 mb-4">
+			<h1 class="jumbotron-heading mb-1">{{adventureName}}</h1>
+			<div v-if="adventureDescription">
+				<hr/>
+				<p class="lead text-muted">{{adventureDescription}}</p>
+			</div>
+		</div>
 		<vdm-scene-component @sceneChangeEvent="updateSelectedScene"></vdm-scene-component>
 		<div class="col-md-8">
 			<div class="col-md-12">
