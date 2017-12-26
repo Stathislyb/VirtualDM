@@ -2,8 +2,8 @@
 var html = `
 	<div class="row mt-5">
 		<div class="col-md-12 mb-4">
-			<h1 class="jumbotron-heading mb-1">{{adventureName}}</h1>
-			<div v-if="adventureDescription">
+			<h1>{{adventureName}}</h1>
+			<div v-if="adventureDescription" class="mt-1">
 				<hr/>
 				<p class="lead text-muted">{{adventureDescription}}</p>
 			</div>
