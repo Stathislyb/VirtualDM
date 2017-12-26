@@ -135,36 +135,27 @@ class Main_model extends CI_Model {
 			"The founding of a fellowship.",
 			"Neglect of the environment.",
 			"Blight.",
-			"The beginning of an enterprise
-			which may harm others.",
-			"Ecstasy to the point of
-			divorce from reality.",
+			"The beginning of an enterprise which may harm others.",
+			"Ecstasy to the point of divorce from reality.",
 			"Conquest by force.",
 			"Macho excess.",
 			"Willpower.",
 			"The recruitment of allies.",
-			"The triumph of an evil
-			cause.",
-			"Physical and emotional
-			violation.",
-			"Weakness in the face of
-			opposition.",
-			"Force applied with
-			deliberate malice.",
+			"The triumph of an evil cause.",
+			"Physical and emotional violation.",
+			"Weakness in the face of opposition.",
+			"Force applied with deliberate malice.",
 			"A declaration of war.",
 			"Persecution of the innocent.",
 			"Love.",
-			"Abandonment of the
-			spiritual.",
+			"Abandonment of the spiritual.",
 			"Instant gratification.",
 			"Intellectual inquiry.",
-			"Antagonism towards new
-			ideas.",
+			"Antagonism towards new ideas.",
 			"Joy and laughter.",
 			"Written messages.",
 			"Movement.",
-			"Wasteful dispersal of
-			energies.",
+			"Wasteful dispersal of energies.",
 			"Truce.",
 			"Balance disturbed.",
 			"Tension released.",
@@ -172,104 +163,78 @@ class Main_model extends CI_Model {
 			"Friendship.",
 			"Physical attraction.",
 			"Love for the wrong reasons.",
-			"Passion which interferes
-			with judgment.",
+			"Passion which interferes with judgment.",
 			"A physical challenge.",
 			"Desertion of a project.",
 			"Domination.",
 			"Procrastination.",
 			"Acclaim.",
-			"A journey which causes
-			temporary separation.",
+			"A journey which causes temporary separation.",
 			"Loss.",
-			"A matter concluded in
-			plenty.",
+			"A matter concluded in plenty.",
 			"Healing.",
-			"Excessive devotion to the
-			pleasures of the senses.",
-			"Swiftness in bringing a
-			matter to its conclusion.",
-			"Delay in obtaining material
-			possessions.",
+			"Excessive devotion to the pleasures of the senses.",
+			"Swiftness in bringing a matter to its conclusion.",
+			"Delay in obtaining material possessions.",
 			"Delay.",
 			"Prosperity.",
 			"Material difficulties.",
 			"Cessation of benefits.",
 			"Temporary companionship.",
-			"Loss due to the
-			machinations of another.",
+			"Loss due to the machinations of another.",
 			"Lies made public.",
 			"Spite.",
-			"A situation does not live up
-			to expectations.",
+			"A situation does not live up to expectations.",
 			"Defeat.",
 			"Return of an old friend.",
 			"New alliances.",
 			"Imitation of reality.",
 			"Confusion in legal matters.",
 			"Bureaucracy.",
-			"Unfairness in a business
-			matter.",
+			"Unfairness in a business matter.",
 			"Journey by water.",
-			"A path away from
-			difficulties.",
-			"A temporary respite in
-			struggle.",
+			"A path away from difficulties.",
+			"A temporary respite in struggle.",
 			"Stalemate.",
 			"Publicity.",
-			"Public recognition for one's
-			efforts.",
+			"Public recognition for one's efforts.",
 			"Good news.",
 			"Bad news.",
-			"Indefinite postponement by
-			another of a project.",
-			"Cause for anxiety due to
-			exterior factors.",
-			"Delay in achieving one's
-			goal.",
+			"Indefinite postponement by another of a project.",
+			"Cause for anxiety due to exterior factors.",
+			"Delay in achieving one's goal.",
 			"Theft.",
 			"A journey by land.",
-			"Good advice from an
-			expert.",
-			"The exposure and
-			consequent failure of a plot.",
-			"A project about to reach
-			completion.",
+			"Good advice from an expert.",
+			"The exposure and consequent failure of a plot.",
+			"A project about to reach completion.",
 			"Intellectual competition.",
 			"Haggling.",
 			"Imprisonment.",
 			"Illness.",
 			"Release.",
 			"Opposition collapses.",
-			"A matter believed to be of
-			great importance is actually
+			"A matter believed to be of great importance is actually
 			of small consequence.",
 			"Loss of interest.",
 			"Celebration of a success.",
-			"Rapid development of an
-			undertaking.",
+			"Rapid development of an undertaking.",
 			"Travel by air.",
-			"Non-arrival of an expected
-			communication.",
+			"Non-arrival of an expected communication.",
 			"Jealousy.",
-			"Dispute among par tners.",
-			"A project does not work
-			out.",
+			"Dispute among partners.",
+			"A project does not work out.",
 			"The possible loss of home.",
-			"An investment proves
-			worthless.",
+			"An investment proves worthless.",
 			"Suffering.",
 			"Mental imprisonment.",
 			"Debasement.",
-			"Material desires are wholly
-			fulfilled.",
+			"Material desires are wholly fulfilled.",
 			"Overindulgence.",
-			"Wishes fall shor t.",
+			"Wishes fall short.",
 			"Delaying tactics.",
-			"Stalemate leading to
-			adjournment.",
-			"Adversity, but not
-			insurmountable.",
+			"Stalemate leading to adjournment.",
+			"Adversity, but not insurmountable.",
 			"Gambling.",
 			"Lack of solidity.",
 			"Misfortune.",
@@ -277,16 +242,13 @@ class Main_model extends CI_Model {
 			"Disruption.",
 			"Temporary success.",
 			"Usurped power.",
-			"A balance is made, but it is
-			temporary.",
+			"A balance is made, but it is temporary.",
 			"Failure of a partnership.",
 			"Possible loss of friendship.",
 			"Betrayal.",
 			"Abuse of power.",
-			"Becoming a burden to
-			another.",
-			"Oppression of the few by
-			the many.",
+			"Becoming a burden to another.",
+			"Oppression of the few by the many.",
 			"Intrigues.",
 			"Resentment.",
 			"Fears realized.",
@@ -300,8 +262,7 @@ class Main_model extends CI_Model {
 			"Spying.",
 			"Mutiny.",
 			"News.",
-			"Attachment to the point of
-			obsession.",
+			"Attachment to the point of obsession.",
 			"The affairs of the world.",
 			"Unexpected aid.",
 			"A bearer of intelligence.",
@@ -322,9 +283,7 @@ class Main_model extends CI_Model {
 			"Travel by air.",
 			"Frustration.",
 			"Division.",
-			"The refusal to listen to
-			views at variance to one's
-			own.",
+			"The refusal to listen to views at variance to one's own.",
 			"Motherly figure.",
 			"Opulence.",
 			"Ill-natured gossip.",
@@ -349,13 +308,10 @@ class Main_model extends CI_Model {
 			"Passion",
 			"Hard work.",
 			"The control of masses.",
-			"Alliance as a formality, not
-			sincere.",
-			"Attraction to an object or
-			person.",
+			"Alliance as a formality, not sincere.",
+			"Attraction to an object or person.",
 			"Travel by vehicle.",
-			"Success in an artistic or
-			spiritual pursuit.",
+			"Success in an artistic or spiritual pursuit.",
 			"Vengeance.",
 			"An unethical victory.",
 			"Judicial proceedings.",
@@ -365,21 +321,16 @@ class Main_model extends CI_Model {
 			"A journey.",
 			"Good fortune.",
 			"Too much of a good thing.",
-			"The spiritual over the
-			material.",
-			"The material over the
-			spiritual.",
+			"The spiritual over the material.",
+			"The material over the spiritual.",
 			"Transformation and change.",
 			"Disunion.",
-			"Amassment of riches.",
-			"Overthrow of the existing
-			order.",
-			"Communication by
-			technological means.",
+			"Assessment of riches.",
+			"Overthrow of the existing order.",
+			"Communication by technological means.",
 			"Oppression.",
 			"Hope.",
-			"Hope deceived, daydreams
-			fail.",
+			"Hope deceived, daydreams fail.",
 			"Change of place.",
 		);
 
