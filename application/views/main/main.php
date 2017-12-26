@@ -32,7 +32,7 @@ var html = `
 			</div> 	
 			<div class="row justify-content-md-center">
 				<div class="col-md-8">
-					<input  v-on:keydown="resetQuestion" v-on:keyup.enter="getResult()" v-model="question" type="text" class="form-control" id="new_character_name" placeholder="Type a yes or no question">
+					<input v-on:keydown="resetQuestion" v-on:keyup.enter="getResult()" v-model="question" type="text" class="form-control" id="question_input" placeholder="Type a yes or no question">
 					<button type="button" 
 						v-on:click="getResult()" 
 						class="btn btn-primary pointer form-control mt-3" >
@@ -79,6 +79,21 @@ var html = `
 			<vdm-thread-component></vdm-thread-component>
 			<vdm-character-component></vdm-character-component>
 		</div>
+		
+		<div class="col-md-12 mt-4">
+			<div class="col-md-12 card no-padding logs_card" v-if="showLogs">
+				<h3 class="card-header">Scene Log</h3>
+				<div class="card-block slim-scrollbar">
+					<div  v-for="log_item in logs" class="row log_item" :class="log_item.type" data-toggle="tooltip" data-placement="left" data-animation="false" :data-original-title="log_item.tooltip">
+						<div class="col-md-10 log_text">
+							<div class="main-text">{{log_item.textMain}}</div>
+							<div class="sub-text">{{log_item.textSub}}</div>
+						</div>
+						<div class="col-md-2 text-right font-italic">{{log_item.date}}</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 `;
 </script>
@@ -123,7 +138,14 @@ Vue.component('vdm-component', {
 						"reply" : this.result_msg,
 					},
 				};
-				this.updateDatabase(ajaxData);
+				//var vdmComponent = this;
+				this.makeAjaxCall(ajaxData
+					// ,function(data){
+						// vdmComponent.$Notice.success({title: data.message})
+					// }, function(data){
+						// vdmComponent.$Notice.success({title: data.message})
+					// }
+				);
 			}else{
 				if( this.selected_value == 0 ){
 					this.$Notice.error({title: 'Please select the odds'});
@@ -154,6 +176,18 @@ Vue.component('vdm-component', {
 			var object_dice = this.RollDice(1,this.subjects.length);
 			this.event.description = this.subjects[object_dice]+" "+this.actions[action_dice];
 			this.event.show = true;
+			
+			// log the event
+			var ajaxData = {
+				action:"log_event", 
+				data:{
+					"adventure_id": this.adventure_id,
+					"scene_id": 1,
+					"title": focus_title,
+					"description": this.event.meaning,
+				},
+			};
+			this.makeAjaxCall(ajaxData);
 		},
 		RollDice: function(min,max){
 			return Math.floor(Math.random()*(max-min+1)+min);
@@ -165,7 +199,37 @@ Vue.component('vdm-component', {
 			}
 			return active;
 		},
-		updateDatabase: function(ajaxData, successCallback = function(){}, failCallback  = function(){}){
+		updateLogs: function(){
+			var ajaxData = {
+				action:"get_logs", 
+				data:{
+					"adventure_id": this.adventure_id,
+					"scene_id": 1,
+					"last_update": this.lastLogUpdate,
+				},
+			};
+			var vdmComponent = this;
+			this.makeAjaxCall(ajaxData, function(data){
+				if(data.data != false){
+					data.data.forEach(function(log_item) {
+						if( new Date(vdmComponent.lastLogUpdate) < new Date(log_item.date) ){
+							vdmComponent.lastLogUpdate = log_item.date;
+						}
+						vdmComponent.logs.push(log_item);
+					});
+					vdmComponent.sortLogs();
+					vdmComponent.$nextTick(function() {  
+						init_basics();
+					});
+				}
+			});
+		},
+		sortLogs: function(){
+			this.logs.sort(function(a,b){
+				return new Date(b.date) - new Date(a.date);
+			});
+		},
+		makeAjaxCall: function(ajaxData, successCallback = function(data){}, failCallback  = function(data){}){
 			$.ajax({
 				url : this.ajax_url,
 				type: "POST",
@@ -173,11 +237,9 @@ Vue.component('vdm-component', {
 				dataType:"json",
 				success: function(data){
 					if( data.status == 1){
-						successCallback();
-						this.$Notice.success({title: data.message});
+						successCallback(data);
 					}else{
-						failCallback();
-						this.$Notice.error({title: data.message});
+						failCallback(data);
 					}
 				}
 			});
@@ -252,6 +314,16 @@ Vue.component('vdm-component', {
 		rollMessage: function(){
 			return 'Rolled : '+this.result+' ('+this.threshold+'%)';
 		},
+		showLogs: function(){
+			return (this.logs.length > 0);
+		},
+	},
+	created: function () {
+		this.updateLogs();
+
+		setInterval(function () {
+		  this.updateLogs();
+		}.bind(this), 3000); 
 	},
 	template: html,
 });

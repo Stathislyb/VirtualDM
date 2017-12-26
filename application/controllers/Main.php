@@ -95,6 +95,8 @@ class Main extends CI_Controller {
 			'chaos_factor' => 5,
 			'question' => '',
 			'showresult' => false,
+			'logs' => array(),
+			'lastLogUpdate' => 0,
 			'event' => array(
 				'show' => false,
 				'title' => '',
@@ -473,6 +475,138 @@ class Main extends CI_Controller {
 		echo json_encode($result);
     }
 	
+	public function log_question( $data = [] ){
+		$data = $this->security->xss_clean($data);
+		try {
+			$this->db->trans_start();
+			
+			if ( $data['adventure_id'] != 1 || !($data['scene_id'] > 0) || empty(trim($data['question']))
+				|| empty(trim($data['reply'])) || empty(trim($data['result'])) || empty(trim($data['threshold'])) ) {
+				throw new Exception('Missing data, the question could not be logged.');
+			}
+			
+			$insert_data = array(
+				'adventure_id'=> $data['adventure_id'],
+				'scene_id'=> $data['scene_id'],
+				'question'=> $data['question'],
+				'threshold'=> $data['threshold'],
+				'result'=> $data['result'],
+				'reply'=> $data['reply'],
+			);
+			$insert_id = $this->Main_model->insert_question($insert_data);
+			
+			$this->db->trans_complete();
+			$message = "The question was logged successfully";
+			$status = 1 ;
+		} catch (Exception $e) {
+			$this->db->trans_rollback();
+			$status = 0 ;
+			$message = $e->getMessage();
+			$insert_id = 0;
+		}
+		
+		$result = array(
+			'status' => $status,
+			'message' => $message,
+			'insert_id'=> $insert_id,
+		);
+		
+		echo json_encode($result);
+    }
+	
+	public function log_event( $data = [] ){
+		$data = $this->security->xss_clean($data);
+		try {
+			$this->db->trans_start();
+			
+			if ( $data['adventure_id'] != 1 || !($data['scene_id'] > 0) || empty(trim($data['title']))
+				|| empty(trim($data['description'])) ) {
+				throw new Exception('Missing data, the event could not be logged.');
+			}
+			
+			$insert_data = array(
+				'adventure_id'=> $data['adventure_id'],
+				'scene_id'=> $data['scene_id'],
+				'title'=> $data['title'],
+				'description'=> $data['description'],
+			);
+			$insert_id = $this->Main_model->insert_event($insert_data);
+			
+			$this->db->trans_complete();
+			$message = "The event was logged successfully";
+			$status = 1 ;
+		} catch (Exception $e) {
+			$this->db->trans_rollback();
+			$status = 0 ;
+			$message = $e->getMessage();
+			$insert_id = 0;
+		}
+		
+		$result = array(
+			'status' => $status,
+			'message' => $message,
+			'insert_id'=> $insert_id,
+		);
+		
+		echo json_encode($result);
+    }
+	
+	public function get_logs( $data = [] ){
+		$data = $this->security->xss_clean($data);
+		$logs=array();
+		try {
+			$this->db->trans_start();
+			
+			if ( $data['adventure_id'] != 1 || !($data['scene_id'] > 0) ) {
+				throw new Exception('Missing data, could not retrieve the questions.');
+			}
+			
+			$select_data = array(
+				'adventure_id'=> $data['adventure_id'],
+				'scene_id'=> $data['scene_id'],
+				'last_update' => (isset($data['last_update']))?$data['last_update']:0,
+			);
+			
+			$questions = $this->Main_model->get_questions($select_data);
+			foreach($questions as $question){
+				$logs[] = array(
+					'type' => 'log_question',
+					'textMain' =>  $question->question,
+					'textSub' => $question->reply,
+					'tooltip' => $question->result.' ('.$question->threshold.'%)',
+					'date' => $question->created_date,
+				);
+			}
+			
+			$events = $this->Main_model->get_events($select_data);
+			foreach($events as $event){
+				$logs[] = array(
+					'type' => 'log_event',
+					'textMain' =>  $event->title,
+					'textSub' => $event->description,
+					'tooltip' => NULL,
+					'date' => $event->created_date,
+				);
+			}
+			
+			$this->db->trans_complete();
+			$message = "The question was logged successfully";
+			$status = 1 ;
+		} catch (Exception $e) {
+			$this->db->trans_rollback();
+			$status = 0 ;
+			$message = $e->getMessage();
+		}
+		
+		$result = array(
+			'status' => $status,
+			'message' => $message,
+			'data'=> $logs,
+		);
+		
+		echo json_encode($result);
+    }
+	
 	// handle and root the ajax posts
 	public function handle_post(){
 		$action = $this->input->post('action');
@@ -494,6 +628,12 @@ class Main extends CI_Controller {
 			$this->delete_scene( $this->input->post('data') );
 		}elseif( $action == 'edit_scene' ){
 			$this->edit_scene( $this->input->post('data') );
+		}elseif( $action == 'log_question' ){
+			$this->log_question( $this->input->post('data') );
+		}elseif( $action == 'log_event' ){
+			$this->log_event( $this->input->post('data') );
+		}elseif( $action == 'get_logs' ){
+			$this->get_logs( $this->input->post('data') );
 		}
     }
 }

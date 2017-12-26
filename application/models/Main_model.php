@@ -490,5 +490,53 @@ class Main_model extends CI_Model {
 		
 		return $result;
 	}
+	
+	public function insert_question($data=[]){
+		$this->db->insert('questions', $data);
+		return  $this->db->insert_id();
+	}
+	
+	public function insert_event($data=[]){
+		$this->db->insert('events', $data);
+		return  $this->db->insert_id();
+	}
+	
+	public function get_questions($data=[]){
+		$result = false;
+		if( $data['adventure_id'] > 0 && $data['scene_id'] > 0){
+			$this->db->select('id, question, reply, threshold, result, created_date');
+			$this->db->where('adventure_id', $data['adventure_id']);
+			$this->db->where('scene_id', $data['scene_id']);
+			$this->db->where('created_date > ', $data['last_update']);
+			$this->db->where('status', 1);
+			$this->db->order_by('created_date', 'desc');
+			$query = $this->db->get('questions');
+			
+			if($query->num_rows() > 0){
+				$result = $query->result();
+			}
+		}
+		
+		return $result;
+	}
+	
+	public function get_events($data=[]){
+		$result = false;
+		if( $data['adventure_id'] > 0 && $data['scene_id'] > 0){
+			$this->db->select('id, title, description, created_date');
+			$this->db->where('adventure_id', $data['adventure_id']);
+			$this->db->where('scene_id', $data['scene_id']);
+			$this->db->where('created_date > ', $data['last_update']);
+			$this->db->where('status', 1);
+			$this->db->order_by('created_date', 'desc');
+			$query = $this->db->get('events');
+			
+			if($query->num_rows() > 0){
+				$result = $query->result();
+			}
+		}
+		
+		return $result;
+	}
 }
 ?>

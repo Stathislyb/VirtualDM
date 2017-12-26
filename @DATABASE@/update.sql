@@ -1,0 +1,1 @@
+ALTER TABLE `questions` ADD `threshold` INT NOT NULL AFTER `reply`, ADD `result` INT NOT NULL AFTER `threshold`;

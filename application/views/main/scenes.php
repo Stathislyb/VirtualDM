@@ -41,14 +41,14 @@ Vue.component('vdm-scene-component', {
 				okText: 'Save',
                 cancelText: 'Cancel',
 				content: '<div class="form-group"><label for="usr">Scene Title :</label>'+
-						'<input type="text" class="form-control" id="new_scene_name" value="'+scene_obj.title+'" placeholder="Scene title">'+
+						'<input type="text" class="form-control" id="edit_scene_name" value="'+scene_obj.title+'" placeholder="Scene title">'+
 						'</div><div class="form-group"><label for="usr">Scene description :</label>'+
-					    '<textarea class="form-control" id="new_scene_description" :rows="4" placeholder="Scene description or summary">'+scene_obj.description+'</textarea ></div>'+
+					    '<textarea class="form-control" id="edit_scene_description" :rows="4" placeholder="Scene description or summary">'+scene_obj.description+'</textarea ></div>'+
 						'<div class="alert alert-danger hidden modal-error"> </div>',
 				loading: true,
 				onOk: () => {
-					var name = $('#new_scene_name').val();
-					var description = $('#new_scene_description').val();
+					var name = $('#edit_scene_name').val();
+					var description = $('#edit_scene_description').val();
 					var formData = {
 						action:"edit_scene", 
 						data:{

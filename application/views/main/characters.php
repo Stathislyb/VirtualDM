@@ -36,14 +36,14 @@ Vue.component('vdm-character-component', {
 				okText: 'Save',
                 cancelText: 'Cancel',
 				content: '<div class="form-group"><label for="usr">Character Name :</label>'+
-						'<input type="text" class="form-control" value="'+character_obj.title+'" id="new_character_name" placeholder="Character name">'+
+						'<input type="text" class="form-control" value="'+character_obj.title+'" id="edit_character_name" placeholder="Character name">'+
 						'</div><div class="form-group"><label for="usr">Character description :</label>'+
-					    '<textarea class="form-control" id="new_character_description" :rows="4" placeholder="Character description">'+character_obj.description+'</textarea ></div>'+
+					    '<textarea class="form-control" id="edit_character_description" :rows="4" placeholder="Character description">'+character_obj.description+'</textarea ></div>'+
 						'<div class="alert alert-danger hidden modal-error"> </div>',
 				loading: true,
 				onOk: () => {
-					var character_name = $('#new_character_name').val();
-					var character_description = $('#new_character_description').val();
+					var character_name = $('#edit_character_name').val();
+					var character_description = $('#edit_character_description').val();
 					var formData = {
 						action:"edit_character", 
 						data:{

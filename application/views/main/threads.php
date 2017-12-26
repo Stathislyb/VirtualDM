@@ -36,14 +36,14 @@ Vue.component('vdm-thread-component', {
 				okText: 'Save',
                 cancelText: 'Cancel',
 				content: '<div class="form-group"><label for="usr">Thread / Quest Name :</label>'+
-						'<input type="text" class="form-control" value="'+thread_obj.title+'" id="new_tread_name" placeholder="Thread / Quest name">'+
+						'<input type="text" class="form-control" value="'+thread_obj.title+'" id="edit_tread_name" placeholder="Thread / Quest name">'+
 						'</div><div class="form-group"><label for="usr">Thread / Quest description :</label>'+
-					    '<textarea class="form-control" id="new_tread_description" :rows="4" placeholder="Thread / Quest description or summary">'+thread_obj.description+'</textarea ></div>'+
+					    '<textarea class="form-control" id="edit_tread_description" :rows="4" placeholder="Thread / Quest description or summary">'+thread_obj.description+'</textarea ></div>'+
 						'<div class="alert alert-danger hidden modal-error"> </div>',
 				loading: true,
 				onOk: () => {
-					var thread_name = $('#new_tread_name').val();
-					var thread_description = $('#new_tread_description').val();
+					var thread_name = $('#edit_tread_name').val();
+					var thread_description = $('#edit_tread_description').val();
 					var formData = {
 						action:"edit_thread", 
 						data:{
