@@ -489,5 +489,29 @@ class Main_model extends CI_Model {
 		
 		return $result;
 	}
+	
+	public function update_adventure($data=[]){
+		$result = false;
+		if( $data['adventure_id'] > 0 ){
+			$this->db->where('id', $data['adventure_id']);
+			$this->db->update("adventures", $data['adventure_data']);
+			
+			if($this->db->affected_rows() > 0){
+				$result = true;
+			}
+		}
+		
+		return $result;
+	}
+	
+	public function get_adventure($data=[]){
+		
+		$this->db->select('*');
+		$this->db->where('id', $data['adventure_id']);
+		$query = $this->db->get('adventures'); 
+		
+		return $query->row();
+	}
+	
 }
 ?>

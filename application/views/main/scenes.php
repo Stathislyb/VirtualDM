@@ -197,7 +197,27 @@ Vue.component('vdm-scene-component', {
 	},
 	watch:{
 		activeScene: function(){
-			this.$emit('sceneChangeEvent', this.activeScene);
+			if( this.activeScene > 0){
+				var formData = {
+					action:"change_scene", 
+					data:{
+						"adventure_id": this.adventure_id,
+						"scene_id": this.activeScene,
+					},
+				};
+				$.ajax({
+					url : this.ajax_url,
+					type: "POST",
+					data : formData,
+					dataType:"json",
+				});
+				this.$emit('sceneChangeEvent', this.activeScene);
+			}else{
+				// restore initial value after switch init
+				if( this.initialActiveScene > 0){
+					this.activeScene = this.initialActiveScene;
+				}
+			}
 		},
 	},
 	template: html,

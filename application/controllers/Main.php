@@ -8,12 +8,24 @@ class Main extends CI_Controller {
 		$this->load->model('Main_model');
     }
 	
-	public function index(){
-		$data = [];
+	public function index($adventure_id = 1){
+		$this->adventure($adventure_id);
+	}
+	
+	public function adventure($adventure_id = 1){
+		$adventure_id = $adventure_id;
+		
+		// get the adventure's data and prepare to pass them to the component
+		$adventure = $this->Main_model->get_adventure([
+			'adventure_id' => $adventure_id,
+		]);
+		
+		$selected_scene = $adventure->selected_scene;
+		$chaos_factor = $adventure->chaos_factor;
 		
 		// get the scenes' data and prepare to pass them to the component
 		$scenes = $this->Main_model->get_scenes([
-			'adventure_id' => 1,
+			'adventure_id' => $adventure_id,
 		]);
 		$scenes_list = array();
 		if( $scenes != false ){
@@ -26,18 +38,18 @@ class Main extends CI_Controller {
 				);
 			}
 		}
-		$active_scene_id = 1;
 		$scenes_data = array(
 			'ajax_url' => base_url().'index.php/Main/handle_post',
-			'adventure_id' =>1,
+			'adventure_id' =>$adventure_id,
 			'scenes' => $scenes_list,
-			'activeScene' => $active_scene_id, 
-			'selectedTab' => 'scene_'.$active_scene_id,	
+			'activeScene' => $selected_scene, 
+			'initialActiveScene' => $selected_scene,
+			'selectedTab' => 'scene_'.$selected_scene,	
 		);
 		
 		// get the threads' data and prepare to pass them to the component
 		$threads = $this->Main_model->get_threads([
-			'adventure_id' => 1,
+			'adventure_id' => $adventure_id,
 		]);
 		$threads_list = array();
 		if( $threads != false ){
@@ -51,13 +63,13 @@ class Main extends CI_Controller {
 		}
 		$threads_data = array(
 			'ajax_url' => base_url().'index.php/Main/handle_post',
-			'adventure_id' =>1,
+			'adventure_id' => $adventure_id,
 			'threads_list' => $threads_list,
 		);
 		
 		// get the characters' data and prepare to pass them to the component
 		$characters = $this->Main_model->get_characters([
-			'adventure_id' => 1,
+			'adventure_id' => $adventure_id,
 		]);
 		$characters_list = array();
 		if( $characters != false ){
@@ -71,7 +83,7 @@ class Main extends CI_Controller {
 		}
 		$characters_data = array(
 			'ajax_url' => base_url().'index.php/Main/handle_post',
-			'adventure_id' =>1,
+			'adventure_id' => $adventure_id,
 			'characters_list' => $characters_list,
 		);
 		
@@ -84,8 +96,8 @@ class Main extends CI_Controller {
 		$meaning = $this->Main_model->get_meaning();
 		$app_data = array(
 			'ajax_url' => base_url().'index.php/Main/handle_post',
-			'adventure_id' =>1,
-			'selected_scene' => 1,
+			'adventure_id' => $adventure_id,
+			'selected_scene' => $selected_scene,
 			'ranks' => $ranks,
 			'focus' => $focus,
 			'actions' => $actions,
@@ -93,7 +105,7 @@ class Main extends CI_Controller {
 			'meaning' => $meaning,
 			'selected_value' => 0,
 			'result' => 0,
-			'chaos_factor' => 5,
+			'chaos_factor' => $chaos_factor,
 			'question' => '',
 			'showresult' => false,
 			'logs' => array(),
@@ -477,6 +489,45 @@ class Main extends CI_Controller {
 		echo json_encode($result);
     }
 	
+	public function change_scene( $data = [] ){
+		$data = $this->security->xss_clean($data);
+		try {
+			$this->db->trans_start();
+			
+			if ( $data['adventure_id'] != 1 ) {
+				throw new Exception('Wrong adventure id.');
+			}
+			if ( !($data['scene_id'] > 0) ) {
+				throw new Exception('Wrong scene id.');
+			}
+			
+			$update_data = array(
+				'adventure_id'=> $data['adventure_id'],
+				'adventure_data' => array(
+					'selected_scene'=> $data['scene_id'],
+				),
+			);
+			$update_result = $this->Main_model->update_adventure($update_data);
+			
+			$this->db->trans_complete();
+			$message = "The scene was selected successfully";
+			$status = 1 ;
+		} catch (Exception $e) {
+			$this->db->trans_rollback();
+			$status = 0 ;
+			$message = $e->getMessage();
+			$update_result = false;
+		}
+		
+		$result = array(
+			'status' => $status,
+			'message' => $message,
+			'update_result'=> $update_result,
+		);
+		
+		echo json_encode($result);
+    }
+	
 	public function log_question( $data = [] ){
 		$data = $this->security->xss_clean($data);
 		try {
@@ -637,6 +688,8 @@ class Main extends CI_Controller {
 			$this->delete_scene( $this->input->post('data') );
 		}elseif( $action == 'edit_scene' ){
 			$this->edit_scene( $this->input->post('data') );
+		}elseif( $action == 'change_scene' ){
+			$this->change_scene( $this->input->post('data') );
 		}elseif( $action == 'log_question' ){
 			$this->log_question( $this->input->post('data') );
 		}elseif( $action == 'log_event' ){
