@@ -507,9 +507,9 @@ class Main_model extends CI_Model {
 			$this->db->select('id, question, reply, threshold, result, created_date');
 			$this->db->where('adventure_id', $data['adventure_id']);
 			$this->db->where('scene_id', $data['scene_id']);
-			$this->db->where('created_date > ', $data['last_update']);
+			$this->db->where('id > ', $data['last_question_update']);
 			$this->db->where('status', 1);
-			$this->db->order_by('created_date', 'desc');
+			$this->db->order_by('id', 'desc');
 			$query = $this->db->get('questions');
 			
 			if($query->num_rows() > 0){
@@ -526,9 +526,9 @@ class Main_model extends CI_Model {
 			$this->db->select('id, title, description, created_date');
 			$this->db->where('adventure_id', $data['adventure_id']);
 			$this->db->where('scene_id', $data['scene_id']);
-			$this->db->where('created_date > ', $data['last_update']);
+			$this->db->where('id > ', $data['last_event_update']);
 			$this->db->where('status', 1);
-			$this->db->order_by('created_date', 'desc');
+			$this->db->order_by('id', 'desc');
 			$query = $this->db->get('events');
 			
 			if($query->num_rows() > 0){

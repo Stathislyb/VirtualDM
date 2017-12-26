@@ -97,7 +97,8 @@ class Main extends CI_Controller {
 			'question' => '',
 			'showresult' => false,
 			'logs' => array(),
-			'lastLogUpdate' => 0,
+			'lastLogQuestion' => 0,
+			'lastLogEvent' => 0,
 			'event' => array(
 				'show' => false,
 				'title' => '',
@@ -565,13 +566,15 @@ class Main extends CI_Controller {
 			$select_data = array(
 				'adventure_id'=> $data['adventure_id'],
 				'scene_id'=> $data['scene_id'],
-				'last_update' => (isset($data['last_update']))?$data['last_update']:0,
+				'last_question_update' => (isset($data['last_question_update']))?$data['last_question_update']:0,
+				'last_event_update' => (isset($data['last_event_update']))?$data['last_event_update']:0,
 			);
 			
 			$questions = $this->Main_model->get_questions($select_data);
 			if($questions !== false){
 				foreach($questions as $question){
 					$logs[] = array(
+						'id' => $question->id,
 						'type' => 'log_question',
 						'textMain' =>  $question->question,
 						'textSub' => $question->reply,
@@ -585,6 +588,7 @@ class Main extends CI_Controller {
 			if($events !== false){
 				foreach($events as $event){
 					$logs[] = array(
+						'id' => $event->id,
 						'type' => 'log_event',
 						'textMain' =>  $event->title,
 						'textSub' => $event->description,

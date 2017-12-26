@@ -210,16 +210,23 @@ Vue.component('vdm-component', {
 				data:{
 					"adventure_id": this.adventure_id,
 					"scene_id": this.selected_scene,
-					"last_update": this.lastLogUpdate,
+					"last_question_update": this.lastLogQuestion,
+					"last_event_update": this.lastLogEvent,
 				},
 			};
-			console.log(ajaxData.data);
 			var vdmComponent = this;
 			this.makeAjaxCall(ajaxData, function(data){
 				if(data.data != false){
 					data.data.forEach(function(log_item) {
-						if( new Date(vdmComponent.lastLogUpdate) < new Date(log_item.date) ){
-							vdmComponent.lastLogUpdate = log_item.date;
+						if( log_item.type == 'log_question'){ 
+							if( parseInt(vdmComponent.lastLogQuestion) < parseInt(log_item.id) ){
+								vdmComponent.lastLogQuestion = log_item.id;
+							}
+						}
+						if( log_item.type == 'log_event'){ 
+							if( parseInt(vdmComponent.lastLogEvent) < parseInt(log_item.id) ){
+								vdmComponent.lastLogEvent = log_item.id;
+							}
 						}
 						vdmComponent.logs.push(log_item);
 					});
@@ -257,7 +264,8 @@ Vue.component('vdm-component', {
 	watch:{
 		selected_scene: function(){
 			if(this.selected_scene > 0){
-				this.lastLogUpdate = 0;
+				this.lastLogQuestion = 0;
+				this.lastLogEvent = 0;
 				this.logs = [];
 				this.updateLogs();
 			}
