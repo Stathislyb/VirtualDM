@@ -90,22 +90,70 @@ class Main extends CI_Controller {
 		
 		// get the main page's data and prepare to pass them to the component
 		$ranks = $this->Main_model->get_ranks();
+		$ranks_list = array();
+		$ranks_weight = 0;
+		$ranks_multiplier = 0;
+		if( $ranks != false ){
+			$ranks_middle = floor( count($ranks) / 2 );
+			foreach($ranks as $index => $rank){
+				
+				$ranks_list[] = array(
+					'title'	=> $rank->title,
+					'weight' => $rank->weight,
+					'selected' => ($index == $ranks_middle)?true:false,
+				);
+				$ranks_weight += $rank->weight;
+			}
+			// $ranks_weight+1 because want to leave room for failure
+			$ranks_multiplier = ceil(100/($ranks_weight+1));
+		}
+		
 		$focus = $this->Main_model->get_focus();
-		$actions = $this->Main_model->get_actions();
-		$subjects = $this->Main_model->get_subjects();
+		$focus_list = array();
+		$focus_weight = 0;
+		$focus_multiplier = 0;
+		if( $focus != false ){
+			foreach($focus as $focus_item){
+				$focus_list[] = array(
+					'title'	=> $focus_item->title,
+					'weight' => $focus_item->weight,
+				);
+				$focus_weight += $focus_item->weight;
+			}
+			if($focus_weight > 0){
+				$focus_multiplier = ceil(100/$focus_weight);
+			}
+		}
+		
 		$meaning = $this->Main_model->get_meaning();
+		$meaning_list = array();
+		$meaning_weight = 0;
+		$meaning_multiplier = 0;
+		if( $meaning != false ){
+			foreach($meaning as $meaning_item){
+				$focus_list[] = array(
+					'title'	=> $meaning_item->title,
+					'weight' => $meaning_item->weight,
+				);
+				$meaning_weight += $meaning_item->weight;
+			}
+			if($meaning_weight > 0){
+				$meaning_multiplier = ceil(100/$meaning_weight);
+			}
+		}
+		
 		$app_data = array(
 			'ajax_url' => base_url().'index.php/Main/handle_post',
 			'adventure_id' => $adventure_id,
 			'adventureName' => $adventure->name,
 			'adventureDescription' => $adventure->description,
 			'selected_scene' => $selected_scene,
-			'ranks' => $ranks,
-			'focus' => $focus,
-			'actions' => $actions,
-			'subjects' => $subjects,
+			'ranks' => $ranks_list,
+			'ranks_multiplier' => $ranks_multiplier,
+			'focus' => $focus_list,
+			'focus_multiplier' => $focus_multiplier,
 			'meaning' => $meaning,
-			'selected_value' => 0,
+			'meaning_multiplier' => $meaning_multiplier,
 			'result' => 0,
 			'chaos_factor' => $chaos_factor,
 			'question' => '',

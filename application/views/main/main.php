@@ -70,12 +70,9 @@ var html = `
 				</div>
 				
 				<div class="col-md-12 card no-padding event_card" v-if="event.show">
-					<h3 class="card-header">Random Event</h3>
+					<h3 class="card-header">{{event.title}}</h3>
 					<div class="card-block">
-						<h3 class="card-title">{{event.title}}</h3>
-						<hr/>
-						{{event.meaning}}<br/>
-						<p class="event_description">{{event.description}}</p>
+						<h3 class="card-title">{{event.meaning}}</h3>
 					</div>
 				</div>
 					
@@ -124,8 +121,7 @@ Vue.component('vdm-component', {
 			this.ranks.forEach(function(rank_element) {
 				rank_element.selected = false;
 			});
-			rank.selected=true;
-			this.selected_value = rank.value;		
+			rank.selected=true;	
 			this.showresult = false;		
 		},
 		getResult:function(){
@@ -174,19 +170,28 @@ Vue.component('vdm-component', {
 		generateEvent:function(){
 			var focus_dice = this.RollDice(1,100);
 			var focus_title = '';
+			var threshold = 0;
+			var focus_multiplier = this.focus_multiplier;
 			this.focus.forEach(function(focus_element) {
-				if( focus_title=='' && focus_dice <= focus_element.threshold){
+				threshold = threshold + focus_multiplier * focus_element.weight;
+				if( focus_title=='' && focus_dice <= threshold){
 					focus_title = focus_element.title;
 				}
 			});
 			this.event.title = focus_title;
 			
-			var meaning_dice = this.RollDice(1,this.meaning.length);
-			this.event.meaning = this.meaning[meaning_dice];
+			var meaning_dice = this.RollDice(1,100);
+			var meaning_title = '';
+			threshold = 0;
+			var meaning_multiplier = this.meaning_multiplier;
+			this.meaning.forEach(function(meaning_element) {
+				threshold = threshold + meaning_multiplier * meaning_element.weight;
+				if( meaning_title=='' && meaning_dice <= threshold){
+					meaning_title = meaning_element.title;
+				}
+			});
+			this.event.meaning = meaning_title;
 			
-			var action_dice = this.RollDice(1,this.actions.length);
-			var object_dice = this.RollDice(1,this.subjects.length);
-			this.event.description = this.subjects[object_dice]+" "+this.actions[action_dice];
 			this.event.show = true;
 			
 			// log the event
@@ -300,6 +305,21 @@ Vue.component('vdm-component', {
 		},
 	},
 	computed: {
+		selected_value:function(){
+			var value = 0 ;
+			var include_element = true;
+			var ranks_multiplier = this.ranks_multiplier;
+			this.ranks.forEach(function(rank_element) {
+				if( include_element == true){
+					value += ranks_multiplier*rank_element.weight;
+				}
+				if( rank_element.selected == true){
+					include_element = false;
+				}
+			});
+			
+			return value;
+		},
 		threshold: function(){
 			var value = this.selected_value + (this.chaos_factor-5)*5;
 			
