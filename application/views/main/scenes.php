@@ -134,6 +134,7 @@ Vue.component('vdm-scene-component', {
 				description: new_item.item_description,
 			});
 			this.activeScene = new_item.item_id;
+			this.handleNewScene(new_item.item_id);
 		},
 		removeScene (scene_index) {
 			this.$Modal.confirm({
@@ -193,7 +194,40 @@ Vue.component('vdm-scene-component', {
 			  }
 			});
 			return sceneIndex;
-		}
+		},
+		handleNewScene: function(sceneID){
+			// work in progress
+			var scene_dice = this.RollDice(1,9);
+			var chaos_factor = parseInt(jQuery('.chaos-button.active').html());
+			if(chaos_factor > scene_dice){
+				var chaos_threshold = Math.ceil(chaos_factor/2);
+				if(scene_dice > chaos_threshold){
+					console.log('alter scene');
+					this.$alert('Generate a random event to find out how.', 'The scene is altered !', {
+					  confirmButtonText: 'OK',
+					  type: 'warning',
+					  // callback: action => {
+						// this.$message({
+						  // type: 'warning',
+						  // message: `action: ${ action }`
+						// });
+					  // }
+					});
+					
+				}else{
+					this.$alert('Create and resolve a new scene before coming to this one.', 'The scene is interrupted !', {
+					  confirmButtonText: 'OK',
+					  type: 'danger',
+					  callback: action => {
+						this.addSceneModal()
+					  }
+					});
+				}
+			}
+		},
+		RollDice: function(min,max){
+			return Math.floor(Math.random()*(max-min+1)+min);
+		},
 	},
 	watch:{
 		activeScene: function(){

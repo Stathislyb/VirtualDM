@@ -16,7 +16,7 @@ var html = `
 					<button type="button"
 						v-for="i in 9" 
 						v-on:click="setChaos(i)" 
-						class="btn btn-outline-warning pointer mr-2" 
+						class="btn btn-outline-warning pointer mr-2 chaos-button" 
 						v-bind:class="{ active: isChaosSelect(i), underline: (i==5) }" >
 						{{ i }}
 					</button>
