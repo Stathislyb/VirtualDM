@@ -227,7 +227,7 @@ class Main extends CI_Controller {
 			if ( $data['adventure_id'] != 1 ) {
 				throw new Exception('Wrong adventure id.');
 			}
-			if ( $data['thread_id'] != 1 ) {
+			if ( !($data['thread_id'] > 0) ) {
 				throw new Exception('Wrong quest id.');
 			}
 			if ( empty(trim($data['thread_name'])) ) {
@@ -355,7 +355,7 @@ class Main extends CI_Controller {
 			}
 			
 			$update_data = array(
-				'character_id'=> $data['adventure_id'],
+				'character_id'=> $data['character_id'],
 				'character_data' => array(
 					'name'=> $data['character_name'],
 					'description'=> $data['character_description'],

@@ -25,13 +25,13 @@ var html = `
 			<div class="col-md-12">
 				<label class="title-label">Select the Odds:</label>
 				<div class="rank-links row justify-content-md-center">
-					<button type="button" 
+					<div 
 						v-for="rank in ranks" 
 						v-on:click="selectRank(rank)" 
-						class="col-3 btn btn-outline-primary pointer mr-2 mb-1" 
+						class="col-lg-3 btn btn-outline-primary pointer mr-2 mb-1 min-210" 
 						v-bind:class="{ active: rank.selected }" >
 						{{ rank.title }}
-					</button>
+					</div>
 				</div>
 			</div>
 			<div class="col-md-12">
